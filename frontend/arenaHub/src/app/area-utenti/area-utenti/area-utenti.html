@@ -1,0 +1,27 @@
+<section class="ah-section">
+  <div class="container">
+    <div class="row g-4">
+      
+      <div class="col-12 col-lg-8">
+        <div class="ah-surface p-4 p-md-5">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="ah-surface p-4 d-flex flex-column gap-3">
+          <a routerLink="profilo" routerLinkActive="active" class="ah-button-primary w-100 text-center text-decoration-none">
+            Profilo utente
+          </a>
+          <a routerLink="tornei" routerLinkActive="active" class="ah-button-primary w-100 text-center text-decoration-none">
+            I miei tornei
+          </a>
+          <a routerLink="impostazioni" routerLinkActive="active" class="ah-button-primary w-100 text-center text-decoration-none">
+            Impostazioni
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

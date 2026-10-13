@@ -20,6 +20,36 @@
             </div>
 
             <div class="site-header__actions">
+                @if (authService.isAuthenticated()) {
+                <div class="site-header__user-menu">
+                    <button class="site-header__username" type="button" aria-haspopup="true"
+                        [attr.aria-expanded]="userMenuOpen()" aria-controls="user-menu-panel"
+                        (click)="toggleUserMenu()">
+                        {{ authService.currentUser()?.username }}
+                        <span aria-hidden="true">⌄</span>
+                    </button>
+
+                    @if (userMenuOpen()) {
+                    <div id="user-menu-panel" class="site-header__user-panel" aria-label="Menu utente">
+                        <a routerLink="/area-utenti/profilo" (click)="closeUserMenu(); closeMenu()">
+                            Profilo utente
+                        </a>
+
+                        <a routerLink="/area-utenti/tornei" (click)="closeUserMenu(); closeMenu()">
+                            I miei tornei
+                        </a>
+
+                        <a routerLink="/area-utenti/impostazioni" (click)="closeUserMenu(); closeMenu()">
+                            Impostazioni
+                        </a>
+
+                        <button class="site-header__logout" type="button" (click)="logout()">
+                            Esci
+                        </button>
+                    </div>
+                    }
+                </div>
+                } @else {
                 <a class="site-header__login" routerLink="/login" (click)="closeMenu()">
                     Accedi
                 </a>
@@ -27,6 +57,7 @@
                 <a class="ah-button-primary" routerLink="/registrati" (click)="closeMenu()">
                     Registrati
                 </a>
+                }
             </div>
         </div>
     </nav>

@@ -15,10 +15,10 @@ export class HomePageComponent {
 
   //! dati provvisori
   games = signal<GameCardData[]>([
-    { id: 'league-of-legends', name: 'League of Legends' },
-    { id: 'valorant', name: 'Valorant' },
-    { id: 'tetris', name: 'Tetris' },
-    { id: 'fortnite', name: 'Fortnite' },
+    { id: 'league-of-legends', name: 'League of Legends', imageUrl: 'img/leagueoflegends.jpg' },
+    { id: 'valorant', name: 'Valorant', imageUrl: 'img/valorant.jpg' },
+    { id: 'tetris', name: 'Tetris', imageUrl: 'img/tetris.jpg' },
+    { id: 'fortnite', name: 'Fortnite', imageUrl: 'img/fortnite.jpg' },
   ])
 
   selectedGame = signal<GameCardData | null>(null)

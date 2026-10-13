@@ -1,0 +1,67 @@
+<section class="ah-section d-flex align-items-center justify-content-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-5">
+
+                <div class="ah-surface p-4 p-md-5">
+                    <p class="ah-eyebrow">Unisciti a noi</p>
+                    <h2 class="ah-section-title mb-4">Registrati</h2>
+
+                    @if (errorMessage()) {
+                        <div class="alert alert-danger py-2 mb-3" role="alert" style="font-size: 0.85rem;">
+                            {{ errorMessage() }}
+                        </div>
+                    }
+
+                    <form (submit)="onSubmit($event)">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nome utente</label>
+                            <input type="text" class="form-control" 
+                            id="username" placeholder="nickname tuo" 
+                            [(ngModel)]="username" name="username" 
+                            required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" 
+                            id="email" placeholder="tua@email.com"
+                            (ngModel)]="email" name="email"
+                            required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" 
+                            id="password" placeholder="Almeno 6 caratteri" 
+                            [(ngModel)]="password" name="password" 
+                            required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="confirmPassword" class="form-label">Conferma Password</label>
+                            <input type="password" class="form-control" 
+                            id="confirmPassword" placeholder="Ripeti password" 
+                            [(ngModel)]="confirmPassword" name="confirmPassword" 
+                            required>
+                        </div>
+
+                        <button type="submit" class="ah-button-primary w-100" 
+                        [disabled]="!isFormValid() || isLoading()">
+                        @if (isLoading()) {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Creazione account...
+                        } @else {
+                            Crea account
+                        }
+                        </button>
+                    </form>
+
+                    <p class="text-center text-muted mt-3 mb-0" style="font-size: 0.9rem;">
+                        Hai già un account? <a routerLink="/login">Accedi</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

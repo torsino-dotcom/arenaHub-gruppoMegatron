@@ -406,6 +406,11 @@ Accesso: admin. **Risposta 200:** `{ "messaggio": "Partita eliminata" }`
 
 I nomi dei partecipanti sono testuali nel diagramma; non sono mostrati campi `id_utenti` per collegare una partita agli utenti.
 
+### 26. Consultare un gioco
+trovare un torneo per il nome del gioco 
+
+### `GET /api/gioco/{id_gioco}`
+
 ---
 
 ## Riepilogo endpoint
@@ -418,7 +423,7 @@ I nomi dei partecipanti sono testuali nel diagramma; non sono mostrati campi `id
 | 4 | GET | `/api/utenti/me` | autenticato |
 | 5 | PATCH | `/api/utenti/me` | autenticato |
 | 6 | GET | `/api/utenti/me/iscrizioni` | autenticato |
-| 7 | GET | `/api/utenti` | admin |
+| 7 | GET | `/api/utenti` | admin   |
 | 8 | GET | `/api/utenti/{id_utenti}` | admin |
 | 9 | PATCH | `/api/utenti/{id_utenti}` | admin |
 | 10 | DELETE | `/api/utenti/{id_utenti}` | admin |
@@ -437,3 +442,4 @@ I nomi dei partecipanti sono testuali nel diagramma; non sono mostrati campi `id
 | 23 | POST | `/api/tornei/{id_tornei}/partite` | admin |
 | 24 | PATCH | `/api/partite/{id_partite}` | admin |
 | 25 | DELETE | `/api/partite/{id_partite}` | admin |
+| 26 | GET |  `/api/nome gioco/{id_gioco}` | pubblico |

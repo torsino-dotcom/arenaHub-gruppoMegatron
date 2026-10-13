@@ -18,7 +18,8 @@
                             <label for="username" class="form-label">Nome utente</label>
                             <input type="text" class="form-control" 
                             id="username" placeholder="nickname tuo" 
-                            [(ngModel)]="username" name="username" 
+                            [ngModel]="username()"
+                            (ngModelChange)="username.set($event)" name="username" 
                             required>
                         </div>
 
@@ -26,7 +27,8 @@
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" 
                             id="email" placeholder="tua@email.com"
-                            (ngModel)]="email" name="email"
+                            [ngModel]="email()"
+                            (ngModelChange)="email.set($event)" name="email"
                             required>
                         </div>
 
@@ -34,7 +36,8 @@
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" 
                             id="password" placeholder="Almeno 6 caratteri" 
-                            [(ngModel)]="password" name="password" 
+                            [ngModel]="password()" 
+                            (ngModelChange)="password.set($event)"name="password" 
                             required>
                         </div>
 
@@ -42,7 +45,8 @@
                             <label for="confirmPassword" class="form-label">Conferma Password</label>
                             <input type="password" class="form-control" 
                             id="confirmPassword" placeholder="Ripeti password" 
-                            [(ngModel)]="confirmPassword" name="confirmPassword" 
+                            [ngModel]="confirmPassword()"
+                            (ngModelChange)="confirmPassword.set($event)" name="confirmPassword" 
                             required>
                         </div>
 

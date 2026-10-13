@@ -22,7 +22,8 @@
                 class="form-control" 
                 id="email" 
                 placeholder="tua@email.com"
-                [(ngModel)]="email" 
+                [ngModel]="email()" 
+                (ngModelChange)="email.set($event)"
                 name="email"
                 required>
             </div>
@@ -35,7 +36,8 @@
                 class="form-control" 
                 id="password" 
                 placeholder="••••••••"
-                [(ngModel)]="password" 
+                [ngModel]="password()" 
+                (ngModelChange)="password.set($event)"
                 name="password"
                 required>
             </div>

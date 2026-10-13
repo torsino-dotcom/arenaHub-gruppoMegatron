@@ -1,2 +1,136 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'bootstrap/scss/bootstrap';
+
+:root {
+  color-scheme: dark;
+
+  /* Superfici: ogni livello si distingue leggermente dal precedente */
+  --ah-bg: #080b10;
+  --ah-surface: #10151c;
+  --ah-surface-raised: #171e28;
+  --ah-surface-hover: #202936;
+
+  /* Testi e bordi */
+  --ah-text: #f4f1e8;
+  --ah-text-muted: #a3aab5;
+  --ah-border: rgb(255 255 255 / 10%);
+
+  /* Colori semantici */
+  --ah-accent: #2087ed;
+  --ah-accent-hover: #0b59a8;
+
+  --ah-live: #38d6c0;
+  --ah-danger: #ed6a75;
+  --ah-success: #8fd694;
+
+  /* Forme e misure comuni */
+  --ah-radius-sm: 0.5rem;
+  --ah-radius-md: 0.85rem;
+  --ah-radius-lg: 1.25rem;
+  --ah-content-width: 1200px;
+
+  /* Variabili Bootstrap usate dai componenti Bootstrap */
+  --bs-body-bg: var(--ah-bg);
+  --bs-body-color: var(--ah-text);
+  --bs-secondary-color: var(--ah-text-muted);
+  --bs-border-color: var(--ah-border);
+  --bs-link-color: var(--ah-accent);
+  --bs-link-hover-color: var(--ah-accent-hover);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
+html::-webkit-scrollbar {
+  display: none; 
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ah-text);
+  background: var(--ah-bg);
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: var(--ah-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--ah-accent-hover);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ah-accent);
+  outline-offset: 3px;
+}
+
+/* Classi globali per titoli e superfici ricorrenti */
+
+.ah-section {
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+}
+
+.ah-eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--ah-accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ah-section-title {
+  margin: 0;
+  color: var(--ah-text);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+}
+
+.ah-surface {
+  color: var(--ah-text);
+  background: var(--ah-surface);
+  border: 1px solid var(--ah-border);
+  border-radius: var(--ah-radius-md);
+}
+
+.ah-button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  color: var(--ah-bg);
+  background: var(--ah-accent);
+  border: 1px solid var(--ah-accent);
+  border-radius: var(--ah-radius-sm);
+  font-weight: 750;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.ah-button-primary:hover {
+  color: var(--ah-bg);
+  background: var(--ah-accent-hover);
+  border-color: var(--ah-accent-hover);
+}

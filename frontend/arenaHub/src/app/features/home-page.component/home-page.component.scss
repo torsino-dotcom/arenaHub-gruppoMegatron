@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+.home-page__selection {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  color: var(--ah-text-muted);
+  background: var(--ah-surface);
+  border-top: 1px solid var(--ah-border);
+  text-align: center;
+
+  strong {
+    color: var(--ah-accent);
+  }
+}

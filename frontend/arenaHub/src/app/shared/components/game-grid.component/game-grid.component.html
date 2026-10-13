@@ -1,0 +1,27 @@
+<section class="game-section" aria-labelledby="game-section-title">
+    <div class="container-xl">
+        <div class="game-section__heading">
+
+
+            <div>
+                <p class="game-section__eyebrow">scegli il tuo gioco</p>
+                <h2 id="game-section-title" class="game-section__title">
+                    Tornei per ogni arena
+                </h2>
+            </div>
+
+            <a class="game-section__link" routerLink="/tornei">
+                Tutti i tornei<span aria-hidden="true">→</span>
+            </a>
+        </div>
+
+
+        <div class="row g-3">
+            @for (game of games(); track game.id) {
+            <div class="col-6 col-md-4 col-x1-2">
+                <app-game-card [game]="game" (selected)="gameSelected.emit($event)" />
+            </div>
+            }
+        </div>
+    </div>
+</section>

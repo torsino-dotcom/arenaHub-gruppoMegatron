@@ -1,0 +1,122 @@
+:host {
+  display: block;
+  position: relative;
+  z-index: 10;
+}
+
+.site-header {
+  color: var(--ah-text);
+  background: var(--ah-surface);
+  border-bottom: 1px solid var(--ah-border);
+}
+
+.site-header__inner {
+  display: flex;
+  min-height: 4.5rem;
+  align-items: center;
+  gap: 2rem;
+}
+
+.site-brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--ah-text);
+  text-decoration: none;
+}
+
+.site-brand__mark {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  color: var(--ah-bg);
+  background: var(--ah-accent);
+  border-radius: var(--ah-radius-sm);
+  font-weight: 900;
+}
+
+.site-brand__name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+
+  span {
+    color: var(--ah-accent);
+  }
+}
+
+.site-header__navigation {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-header__links,
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.site-header__links a,
+.site-header__login {
+  color: var(--ah-text-muted);
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover,
+  &.is-active {
+    color: var(--ah-text);
+  }
+}
+
+.site-menu-toggle {
+  display: none;
+  margin-left: auto;
+  color: var(--ah-text);
+  background: transparent;
+  border: 1px solid var(--ah-border);
+  border-radius: var(--ah-radius-sm);
+  padding: 0.4rem 0.65rem;
+}
+
+@media (max-width: 767.98px) {
+  .site-header__inner {
+    min-height: 4rem;
+    flex-wrap: wrap;
+    gap: 0;
+    padding-block: 0.5rem;
+  }
+
+  .site-menu-toggle {
+    display: block;
+  }
+
+  .site-header__navigation {
+    display: none;
+    flex: 0 0 100%;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1rem 0 0.5rem;
+  }
+
+  .site-header__navigation.is-open {
+    display: flex;
+  }
+
+  .site-header__links,
+  .site-header__actions {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .site-header__actions {
+    padding-top: 1rem;
+    border-top: 1px solid var(--ah-border);
+  }
+}

@@ -23,10 +23,22 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="name" class="form-label">Nome</label>
+                            <input type="text" class="form-control"
+                            id="name" placeholder="Il tuo nome" [(ngModel)]="name" name="name">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="surname" class="form-label">Cognome</label>
+                            <input type="text" class="form-control"
+                            id="surname" placeholder="Il tuo cognome" [(ngModel)]="surname" name="surname">
+                        </div>
+
+                        <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" 
                             id="email" placeholder="tua@email.com"
-                            (ngModel)]="email" name="email"
+                            [(ngModel)]="email" name="email"
                             required>
                         </div>
 

@@ -13,6 +13,8 @@ import { RouterLink } from '@angular/router';
 })
 export class Signup {
   username = model<string>('')
+  name = model<string>('')
+  surname = model<string>('')
   email = model<string>('')
   password = model<string>('')
   confirmPassword = model<string>('');
@@ -22,6 +24,8 @@ export class Signup {
 
   isFormValid = computed(() => {
     const user = this.username().trim()
+    const name = this.name().trim()
+    const surname = this.surname().trim()
     const mail = this.email().trim()
     const pass = this.password()
     const confirm = this.confirmPassword();

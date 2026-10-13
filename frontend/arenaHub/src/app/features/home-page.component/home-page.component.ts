@@ -3,9 +3,10 @@ import { Component, inject, signal } from '@angular/core';
 import { GameCardData } from '../../shared/game-card-data';
 import { HomeHeroComponent } from '../../shared/components/home-hero.component/home-hero.component';
 import { GameGridComponent } from '../../shared/components/game-grid.component/game-grid.component';
+import { HomeTournamentsPreviewComponent } from '../home-tournaments-preview.component/home-tournaments-preview.component';
 
 @Component({
-  imports: [HomeHeroComponent, GameGridComponent],
+  imports: [HomeHeroComponent, GameGridComponent, HomeTournamentsPreviewComponent],
   selector: 'app-home-page.component',
   styleUrl: './home-page.component.scss',
   templateUrl: './home-page.component.html',

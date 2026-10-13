@@ -1,0 +1,16 @@
+<section class="home-hero">
+    <div class="container-xl">
+        <div class="home-hero__content">
+            <p class="home-hero__eyebrow">{{ eyebrow() }}</p>
+
+            <h1 class="home-hero__title">{{ title() }}</h1>
+
+            <p class="home-hero__subtitle">{{ subtitle() }}</p>
+
+            <button class="btn home-hero_cta" type="button" (click)="ctaClick.emit()">
+                {{ ctaLabel() }}
+                <span aria-hidden="true">→</span>
+            </button>
+        </div>
+    </div>
+</section>

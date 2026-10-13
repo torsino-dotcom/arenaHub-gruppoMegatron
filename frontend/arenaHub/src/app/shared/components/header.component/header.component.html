@@ -1,0 +1,33 @@
+<header class="site-header">
+    <nav class="container-xl site-header__inner" aria-label="Navigazione principale">
+        <a class="site-brand" routerLink="/" (click)="closeMenu()" aria-label="ArenaHub, vai alla home">
+            <span class="site-brand__mark" aria-hidden="true">A</span>
+            <span class="site-brand__name">arena<span>hub</span></span>
+        </a>
+
+        <button class="site-menu-toggle" type="button" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()"
+            aria-controls="site-navigation" [attr.aria-label]="menuOpen() ? 'Chiudi menu' : 'Apri menu'">
+            <span aria-hidden="true">☰</span>
+        </button>
+
+        <div id="site-navigation" class="site-header__navigation" [class.is-open]="menuOpen()">
+            <div class="site-header__links">
+                <a routerLink="/" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+                    [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Home</a>
+
+                <a routerLink="/tornei" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+                    (click)="closeMenu()">Tornei</a>
+            </div>
+
+            <div class="site-header__actions">
+                <a class="site-header__login" routerLink="/login" (click)="closeMenu()">
+                    Accedi
+                </a>
+
+                <a class="ah-button-primary" routerLink="/registrati" (click)="closeMenu()">
+                    Registrati
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>

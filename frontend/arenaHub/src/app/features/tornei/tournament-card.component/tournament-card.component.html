@@ -1,0 +1,42 @@
+<article class="tournament-card" [attr.data-status]="tournament().stato">
+    <div class="tournament-card__topline">
+        <span class="tournament-card__game">{{ tournament().gioco }}</span>
+        <span class="tournament-card__status">{{ tournament().stato }}</span>
+    </div>
+
+    <h2 class="tournament-card__title">
+        {{tournament().nome_torneo}}
+    </h2>
+    <p class="tournament-card__description">
+        {{ tournament().descrizione }}
+    </p>
+
+    <dl class="tournament-card__details">
+        <div>
+            <dt>Inizio</dt>
+            <dd>
+                <time [attr.datetime]="tournament().data_ora">
+                    {{ tournament().data_ora | date: 'dd/MM/yyyy, HH:mm' }}
+                </time>
+            </dd>
+        </div>
+
+        <div>
+            <dt>Iscrizioni entro</dt>
+            <dd>
+                <time [attr.datetime]="tournament().data_fine_iscrizioni">
+                    {{ tournament().data_fine_iscrizioni | date: 'dd/MM/yyyy' }}
+                </time>
+            </dd>
+        </div>
+
+        <div>
+            <dt>Posti massimi</dt>
+            <dd>{{ tournament().posti_max }}</dd>
+        </div>
+    </dl>
+
+    <a class="ah-button-primary tournament-card__link" [routerLink]="['/tornei', tournament().id_tornei]">
+        Vedi dettaglio
+    </a>
+</article>

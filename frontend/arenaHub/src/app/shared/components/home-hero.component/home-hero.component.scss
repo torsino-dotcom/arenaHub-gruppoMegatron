@@ -1,0 +1,73 @@
+:host {
+  display: block;
+}
+
+.home-hero {
+  padding: clamp(5rem, 12vw, 10rem) 0;
+  color: var(--ah-text);
+  background:
+    radial-gradient(
+      ellipse at 78% 30%,
+      color-mix(in srgb, var(--ah-accent) 14%, transparent),
+      transparent 35%
+    ),
+    var(--ah-bg);
+}
+
+.home-hero__content {
+  max-width: 48rem;
+}
+
+.home-hero__eyebrow {
+  margin-bottom: 1rem;
+  color: var(--ah-accent);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.home-hero__title {
+  max-width: 12ch;
+  margin: 0;
+  color: var(--ah-text);
+  font-size: clamp(2.8rem, 7vw, 5.8rem);
+  font-weight: 850;
+  letter-spacing: -0.065em;
+  line-height: 0.98;
+}
+
+.home-hero__subtitle {
+  max-width: 38rem;
+  margin: 1.5rem 0 2rem;
+  color: var(--ah-text-muted);
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  line-height: 1.65;
+}
+
+.home-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  color: var(--ah-bg);
+  background: var(--ah-accent);
+  border: 1px solid var(--ah-accent);
+  border-radius: var(--ah-radius-sm);
+  font-weight: 750;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+
+  &:hover {
+    color: var(--ah-bg);
+    background: var(--ah-accent-hover);
+    border-color: var(--ah-accent-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ah-text);
+    outline-offset: 3px;
+  }
+}

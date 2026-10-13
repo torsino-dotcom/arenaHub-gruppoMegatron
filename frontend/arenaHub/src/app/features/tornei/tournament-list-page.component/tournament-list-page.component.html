@@ -1,0 +1,68 @@
+<section class="tournament-list">
+    <div class="container-xl">
+        <header class="tournament-list__header">
+            <p class="ah-eyebrow">ArenaHub</p>
+            <h1 class="ah-section-title">Tornei</h1>
+            <p class="tournament-list__intro">
+                Cerca il tuo prossimo torneo e scopri i dettagli per partecipare.
+            </p>
+        </header>
+
+        <section class="tournament-filters" aria-label="Filtri tornei">
+            <div class="tournament-filters__Search">
+                <label for="tournament-search" class="tournament-search">Cerca un torneo</label>
+                <input id="tournament-search" class="form-control" type="search" placeholder="Nome o descrizione"
+                    [value]="searchTerm()" (input)="setSearchTerm($event)" />
+            </div>
+
+            <div>
+                <label for="tournament-game">Gioco</label>
+                <select id="tournament-game" class="form-select" [value]="selectedGame()" (change)="setGame($event)">
+                    <option value="tutti">Tutti i giochi</option>
+                    @for (game of games(); track game) {
+                    <option [value]="game">{{ game }}</option>
+                    }
+                </select>
+            </div>
+
+            <div>
+                <label for="tournament-status">Stato</label>
+                <select id="tournament-status" class="form-select" [value]="selectedStatus()"
+                    (change)="setStatus($event)">
+                    <option value="tutti">Tutti gli stati</option>
+                    <option value="aperto">Aperto</option>
+                    <option value="chiuso">Chiuso</option>
+                    <option value="in_corso">In corso</option>
+                    <option value="concluso">Concluso</option>
+                </select>
+            </div>
+
+            <button 
+                class="tournament-filters__reset"
+                type="button"
+                (click)="resetFilters()"
+            >
+                Azzera filtri
+            </button>
+        </section>
+
+        @if (filteredTournaments().length > 0) {
+            <p class="tournament-list__count" aria-live="polite">
+                {{ filteredTournaments().length }}
+                {{ filteredTournaments().length === 1 ? 'torneo trovato' : 'tornei trovati'}}
+            </p>
+
+            <div class="row g-4">
+                @for (tournament of filteredTournaments(); track tournament.id_tornei) {
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <app-tournament-card [tournament]="tournament"/>
+                    </div>
+                }
+            </div>
+        } @else {
+            <p class="tournament-list__empty">
+                Nessun torneo trovato
+            </p>
+        }
+    </div>
+</section>

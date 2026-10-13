@@ -1,0 +1,170 @@
+:host {
+  display: block;
+}
+
+.tournament-detail {
+  min-height: 70vh;
+  padding: clamp(2rem, 5vw, 4rem) 0;
+  color: var(--ah-text);
+  background: var(--ah-bg);
+}
+
+.tournament-detail__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  color: var(--ah-text-muted);
+  font-weight: 650;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--ah-accent);
+  }
+}
+
+.tournament-detail__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 20rem);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.tournament-detail__main {
+  max-width: 48rem;
+}
+
+.tournament-detail__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--ah-accent);
+  font-size: 0.85rem;
+  font-weight: 750;
+}
+
+.tournament-detail__status {
+  padding: 0.25rem 0.6rem;
+  color: var(--ah-text-muted);
+  background: var(--ah-surface);
+  border: 1px solid var(--ah-border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+
+  &[data-status='aperto'] {
+    color: var(--ah-success);
+  }
+
+  &[data-status='in_corso'] {
+    color: var(--ah-live);
+  }
+}
+
+.tournament-detail__title {
+  margin: 1rem 0;
+  color: var(--ah-text);
+  font-size: clamp(2.25rem, 6vw, 4rem);
+  font-weight: 850;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+}
+
+.tournament-detail__description {
+  color: var(--ah-text-muted);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.tournament-detail__section {
+  margin-top: 2.5rem;
+
+  h2 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 750;
+  }
+}
+
+.tournament-detail__facts {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--ah-border);
+  }
+
+  dt {
+    color: var(--ah-text-muted);
+  }
+
+  dd {
+    margin: 0;
+    text-align: right;
+  }
+}
+
+.tournament-detail__signup {
+  padding: 1.4rem;
+  background: var(--ah-surface);
+  border: 1px solid var(--ah-border);
+  border-radius: var(--ah-radius-md);
+
+  h2 {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    font-weight: 750;
+  }
+}
+
+.tournament-detail__capacity {
+  margin: 0 0 0.75rem;
+  color: var(--ah-text-muted);
+
+  strong {
+    color: var(--ah-text);
+    font-size: 1.25rem;
+  }
+}
+
+.tournament-detail__progress {
+  height: 0.5rem;
+  overflow: hidden;
+  background: var(--ah-surface-raised);
+  border-radius: 999px;
+
+  span {
+    display: block;
+    height: 100%;
+    background: var(--ah-accent);
+    border-radius: inherit;
+    transition: width 180ms ease;
+  }
+}
+
+.tournament-detail__notice {
+  margin: 1rem 0;
+  color: var(--ah-text-muted);
+  line-height: 1.5;
+}
+
+.tournament-detail__action {
+  width: 100%;
+  text-align: center;
+}
+
+@media (max-width: 767.98px) {
+  .tournament-detail__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .tournament-detail__signup {
+    grid-row: 1;
+  }
+}

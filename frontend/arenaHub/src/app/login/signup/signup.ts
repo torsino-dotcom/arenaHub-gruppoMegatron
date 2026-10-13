@@ -1,17 +1,19 @@
-import { Component, model, computed, signal } from '@angular/core';
+import { Component, model, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
 
 
 @Component({
-  imports: [ CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   selector: 'app-signup',
   standalone: true,
   styleUrl: './signup.scss',
   templateUrl: './signup.html',
 })
 export class Signup {
+
   username = model<string>('')
   name = model<string>('')
   surname = model<string>('')
@@ -19,8 +21,19 @@ export class Signup {
   password = model<string>('')
   confirmPassword = model<string>('');
 
-  isLoading = signal<boolean>(false)
+ 
+
+  private readonly authService = inject(AuthService)
+  private readonly router = inject(Router)
+
+  username = signal('')
+  email = signal('')
+  password = signal('')
+  confirmPassword = signal('')
+
+  isLoading = signal(false)
   errorMessage = signal<string | null>(null);
+
 
   isFormValid = computed(() => {
     const user = this.username().trim()
@@ -30,15 +43,15 @@ export class Signup {
     const pass = this.password()
     const confirm = this.confirmPassword();
 
-    return (
-      user.length > 0 &&
-      mail.length > 0 &&
-      pass.length >= 6 &&
-      pass === confirm
-    );
-  });
+  isFormValid = computed(() =>
+    this.username().trim().length > 0 &&
+    this.email().trim().length > 0 &&
+    this.password().length >= 6 &&
+    this.password() === this.confirmPassword()
+  )
+ 
 
-  onSubmit(event: Event) {
+  async onSubmit(event: Event): Promise<void> {
     event.preventDefault();
 
     if (this.password() !== this.confirmPassword()) {
@@ -46,8 +59,26 @@ export class Signup {
       return;
     }
 
+    if(!this.isFormValid()) {
+      this.errorMessage.set('Controlla i dati inseriti e riprova.')
+      return
+    }
+
     this.errorMessage.set(null)
     this.isLoading.set(true);
+
+    try {
+      await this.authService.register(
+        this.username(),
+        this.email(),
+        this.password()
+      )
+      await this.router.navigateByUrl('/')
+    } catch (error) {
+      error instanceof Error ? error.message : 'Si è verificato un errore.'
+    } finally {
+      this.isLoading.set(false)
+    }
 
     console.log('Registrazione con:', {
       username: this.username(),

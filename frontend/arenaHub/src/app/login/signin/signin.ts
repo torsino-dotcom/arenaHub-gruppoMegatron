@@ -1,7 +1,8 @@
-import { Component, model, computed, signal } from '@angular/core';
+import { Component, model, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-signin',
@@ -11,22 +12,22 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./signin.scss']
 })
 export class Signin {
-  
-  email = model<string>('');
-  password = model<string>('');
 
+  //services
+  private readonly authService = inject(AuthService)
+  private readonly router = inject(Router)
+
+  email = signal('');
+  password = signal('');
   
-  isLoading = signal<boolean>(false);
+  isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
-  
-  isFormValid = computed(() => {
-    const emailVal = this.email().trim();
-    const passwordVal = this.password();
-    return emailVal.length > 0 && passwordVal.length >= 6;
-  });
+  isFormValid = computed(() => 
+    this.email().trim().length > 0 && this.password().length >= 6
+  )
 
-  onSubmit(event: Event) {
+  async onSubmit(event: Event): Promise<void> {
     event.preventDefault();
 
     if (!this.isFormValid()) {
@@ -37,14 +38,15 @@ export class Signin {
     this.errorMessage.set(null);
     this.isLoading.set(true);
 
-    console.log('Login con:', {
-      email: this.email(),
-      password: this.password()
-    });
-
-    
-    setTimeout(() => {
-      this.isLoading.set(false);
-    }, 1500);
+    try {
+      await this.authService.login(this.email(), this.password())
+      await this.router.navigateByUrl('/')
+    } catch (error) {
+      this.errorMessage.set(
+        error instanceof Error ? error.message : 'Si è verificato un errore.'
+      )
+    } finally {
+      this.isLoading.set(false)
+    }
   }
 }

@@ -1,7 +1,8 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { TouranmentDetail, TournamentStatus } from '../../models/tornei.model';
+import { TournamentDetail, TournamentStatus } from '../../features/tornei/tornei.model';
+
 
 @Component({
   imports: [CommonModule, RouterLink],
@@ -12,7 +13,7 @@ import { TouranmentDetail, TournamentStatus } from '../../models/tornei.model';
 })
 export class AdminTournaments {
   private readonly router = inject(Router);
-  tournaments = signal<TouranmentDetail[]>([
+  tournaments = signal<TournamentDetail[]>([
     {
       id_tornei: 1,
       nome_torneo: "Torneo d'autunno",
@@ -39,17 +40,17 @@ export class AdminTournaments {
     }
   ]);
 
-  selectedTournamentForMembers = signal<TouranmentDetail | null>(null);
+  selectedTournamentForMembers = signal<TournamentDetail | null>(null);
 
   onCreateTournament(): void {
     console.log('Apertura form/modal Creazione Torneo (POST /api/tornei)');
   }
 
-  onEditTournament(tournament: TouranmentDetail): void {
+  onEditTournament(tournament: TournamentDetail): void {
     console.log('Modifica torneo (PUT /api/tornei/' + tournament.id_tornei + ')');
   }
 
-  toggleStatus(tournament: TouranmentDetail): void {
+  toggleStatus(tournament: TournamentDetail): void {
     const newStatus: TournamentStatus = tournament.stato === 'aperto' ? 'chiuso' : 'aperto';
 
     this.tournaments.update(list =>
@@ -59,7 +60,7 @@ export class AdminTournaments {
     console.log(`Aggiornato stato torneo ${tournament.id_tornei} a ${newStatus} (PUT /api/tornei/${tournament.id_tornei})`);
   }
 
-  onViewRegistered(tournament: TouranmentDetail): void {
+  onViewRegistered(tournament: TournamentDetail): void {
     this.selectedTournamentForMembers.set(tournament);
     console.log(`Richiesta iscritti per il torneo ${tournament.id_tornei} (GET iscritti)`);
   }

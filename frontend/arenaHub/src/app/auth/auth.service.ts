@@ -1,8 +1,11 @@
 import { computed, Injectable, signal } from "@angular/core"
 
+export type UserRole = 'utente' | 'admin'
+
 export interface AuthUser {
     username: string
     email: string
+    ruolo: UserRole
 }
 /**
  * interfaccia per provare i dati
@@ -18,7 +21,14 @@ export class AuthService {
             username: 'ArenaTester',
             email: 'tester@arenahub.it',
             password: 'arena123',
+            ruolo: 'utente'
         },
+        {
+            username: 'ArenaAdmin',
+            email: 'admin@arenahub.it',
+            password: 'admin123',
+            ruolo: 'admin',
+        }
     ])
 
     private readonly user = signal<AuthUser | null>(null)
@@ -41,7 +51,8 @@ export class AuthService {
 
         this.user.set({
             username: account.username,
-            email: account.email
+            email: account.email,
+            ruolo: account.ruolo
         })
     }
 
@@ -53,20 +64,22 @@ export class AuthService {
             account => account.email.toLowerCase() === normalizedEmail
         )
 
-        if(emailExists) {
+        if (emailExists) {
             throw new Error('Esiste già un account con questa email.')
         }
 
         const account: MockAccount = {
             username: username.trim(),
             email: normalizedEmail,
+            ruolo: 'utente',
             password
         }
 
         this.accounts.update(accounts => [...accounts, account])
         this.user.set({
             username: account.username,
-            email: account.email
+            email: account.email,
+            ruolo: account.ruolo
         })
     }
 

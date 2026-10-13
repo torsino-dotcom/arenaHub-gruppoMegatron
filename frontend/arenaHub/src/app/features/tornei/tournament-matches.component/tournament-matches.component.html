@@ -1,0 +1,54 @@
+<section class="tournament-matches" aria-labelledby="matches-title">
+  <div class="tournament-matches__heading">
+    <div>
+      <p class="tournament-matches__eyebrow">Calendario</p>
+      <h2 id="matches-title">Prossime partite</h2>
+    </div>
+  </div>
+
+  @if (matches().length > 0) {
+    <div class="tournament-matches__list">
+      @for (match of matches(); track match.id_partite) {
+        <article class="tournament-match">
+          <div class="tournament-match__info">
+            <span class="tournament-match__phase">{{ match.fase }}</span>
+            <span>{{ match.formato_match }}</span>
+          </div>
+
+          <div class="tournament-match__players">
+            <span>{{ match.nome_persona1 }}</span>
+
+            @if (match.stato === 'in_corso') {
+              <strong class="tournament-match__score">
+                {{ match.punteggio_1 ?? '–' }}
+                :
+                {{ match.punteggio_2 ?? '–' }}
+              </strong>
+            } @else {
+              <span class="tournament-match__versus">VS</span>
+            }
+
+            <span>{{ match.nome_persona2 }}</span>
+          </div>
+
+          <div class="tournament-match__schedule">
+            <time [attr.datetime]="match.orario_inizio">
+              {{ match.orario_inizio | date: 'dd/MM/yyyy, HH:mm' }}
+            </time>
+
+            <span
+              class="tournament-match__status"
+              [attr.data-status]="match.stato"
+            >
+              {{ statusLabel(match.stato) }}
+            </span>
+          </div>
+        </article>
+      }
+    </div>
+  } @else {
+    <p class="tournament-matches__empty">
+      Non ci sono partite in programma al momento.
+    </p>
+  }
+</section>

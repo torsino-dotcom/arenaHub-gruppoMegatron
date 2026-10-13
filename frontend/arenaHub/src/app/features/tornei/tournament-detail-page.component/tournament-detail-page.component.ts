@@ -1,51 +1,95 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
-import { TouranmentDetail, TournamentStatus } from '../tornei.model';
-import { RouterLink } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { TournamentDetail, TournamentStatus } from '../tornei.model';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AuthService } from '../../../auth/auth.service';
+import { TournamentEnrollmentService } from '../tournament-enrollment.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MOCK_TOURNAMENTS } from '../mocktournaments';
+import { TournamentMatchesComponent } from '../tournament-matches.component/tournament-matches.component';
+import { TournamentStoreService } from '../tournament-store.service';
 
 @Component({
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, TournamentMatchesComponent],
   selector: 'app-tournament-detail-page',
   standalone: true,
   styleUrl: './tournament-detail-page.component.scss',
   templateUrl: './tournament-detail-page.component.html',
 })
 export class TournamentDetailPageComponent {
-  //? dati di prova
-  readonly tournament = signal<TouranmentDetail>({
-    id_tornei: 1,
-    nome_torneo: 'ArenaHub Open',
-    descrizione:
-      'Un torneo aperto alla community. Forma la tua squadra e preparati a scendere in arena.',
-    gioco: 'League of Legends',
-    data_ora: '2026-10-20T18:00:00',
-    data_inizio_iscrizioni: '2026-10-01',
-    data_fine_iscrizioni: '2026-10-19',
-    posti_max: 16,
-    posti_occupati: 9,
-    stato: 'aperto',
+  private readonly route = inject(ActivatedRoute)
+  private readonly tournamentStore = inject(TournamentStoreService)
+
+  private readonly routeParams = toSignal(this.route.paramMap, {
+    initialValue: this.route.snapshot.paramMap
   })
 
-  readonly isFull = computed(
-    () => this.tournament().posti_occupati >= this.tournament().posti_max
-  )
+  readonly authService = inject(AuthService)
+  private readonly enrollmentService = inject(TournamentEnrollmentService)
+
+  readonly tournament = computed(() => {
+    const id = Number(this.routeParams().get('id'))
+
+    return this.tournamentStore.findById(id)
+  })
+
+  readonly currentRegistration = computed(() => {
+    const user = this.authService.currentUser()
+    const tournament = this.tournament()
+
+    if (!user || !tournament) return null
+
+    return this.enrollmentService.findActive(tournament.id_tornei, user.email)
+  })
+
+  readonly occupiedPlaces = computed(() => {
+    const tournament = this.tournament()
+
+    if (!tournament) return 0
+
+    return tournament.posti_occupati +
+      this.enrollmentService.confirmedCount(tournament.id_tornei)
+  })
+
+
+
+  readonly isFull = computed(() => {
+    const tournament = this.tournament()
+
+    return !tournament || this.occupiedPlaces() >= tournament.posti_max
+  })
 
   readonly occupancyPercent = computed(() => {
     const tournament = this.tournament()
-    
-    return Math.min(100, Math.round((tournament.posti_occupati / tournament.posti_max) * 100))
+
+    if (!tournament || tournament.posti_max <= 0) return 0
+
+    return Math.min(100, Math.round((this.occupiedPlaces() / tournament.posti_max) * 100))
   })
 
   readonly registrationIsOpen = computed(() => {
     const tournament = this.tournament()
     const today = this.localDateString()
-    
+
+    if (!tournament) return false
+
     return (
       tournament.stato === 'aperto' &&
       today >= tournament.data_inizio_iscrizioni &&
       today <= tournament.data_fine_iscrizioni
     )
   })
+
+  enroll(): void {
+    const user = this.authService.currentUser()
+    const tournament = this.tournament()
+
+    if (!user || !tournament || !this.registrationIsOpen()) {
+      return
+    }
+
+    this.enrollmentService.enroll(tournament, user)
+  }
 
   statusLabel(status: TournamentStatus): string {
     const label = status.replace('_', ' ')
@@ -55,7 +99,7 @@ export class TournamentDetailPageComponent {
   private localDateString(): string {
     const date = new Date()
     const year = date.getFullYear()
-    const month = String(date.getMonth() +1).padStart(2, '0')
+    const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
 
     return `${year}-${month}-${day}`

@@ -28,7 +28,7 @@ export interface TournamentListItem {
     stato: TournamentStatus
 }
 
-export interface TouranmentDetail extends TournamentListItem {
+export interface TournamentDetail extends TournamentListItem {
     posti_occupati: number
 }
 
@@ -51,4 +51,20 @@ export interface TournamentFilters {
     q?: string
     page?: number
     limit?: number
+}
+
+export type MatchStatus = 'programmata' | 'in_corso' | 'conclusa'
+
+export interface TournamentMatch {
+  id_partite: number
+  id_tornei: number
+  nome_persona1: string
+  nome_persona2: string
+  orario_inizio: string
+  punteggio_1: number | null
+  punteggio_2: number | null
+  persona_vincitrice: string | null
+  formato_match: string
+  stato: MatchStatus
+  fase: string
 }

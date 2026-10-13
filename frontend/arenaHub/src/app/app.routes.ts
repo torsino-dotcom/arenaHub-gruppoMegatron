@@ -9,6 +9,8 @@ import { AreaUtenti } from './area-utenti/area-utenti/area-utenti';
 import { Profile } from './area-utenti/profile/profile';
 import { MyTournaments } from './area-utenti/my-tournaments/my-tournaments';
 import { Settings} from './area-utenti/settings/settings';
+import { AreaAdmin } from './area-admin/area-admin/area-admin';
+import { adminGuard } from './auth/guard/admin.guard';
 
 export const routes: Routes = [
   {
@@ -44,6 +46,9 @@ export const routes: Routes = [
           },
           {
             path: 'profilo', component: Profile
+          },
+          {
+            path: 'admin', canActivate: [adminGuard], component: AreaAdmin
           },
           {
             path: 'tornei', component: MyTournaments

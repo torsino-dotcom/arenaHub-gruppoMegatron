@@ -1,0 +1,40 @@
+import { TournamentDetail } from "./tornei.model";
+
+export const MOCK_TOURNAMENTS: TournamentDetail[] = [
+  {
+    id_tornei: 1,
+    nome_torneo: 'ArenaHub Open',
+    descrizione: 'Torneo aperto a tutti i giocatori.',
+    gioco: 'League of Legends',
+    data_ora: '2026-10-16T15:00:00',
+    data_inizio_iscrizioni: '2026-10-01',
+    data_fine_iscrizioni: '2026-10-15',
+    posti_max: 16,
+    posti_occupati: 5,
+    stato: 'aperto',
+  },
+  {
+    id_tornei: 2,
+    nome_torneo: 'Valorant Friday',
+    descrizione: 'Sfida settimanale in formato eliminazione diretta.',
+    gioco: 'Valorant',
+    data_ora: '2026-10-20T18:00:00',
+    data_inizio_iscrizioni: '2026-10-05',
+    data_fine_iscrizioni: '2026-10-19',
+    posti_max: 8,
+    posti_occupati: 8,
+    stato: 'aperto',
+  },
+  {
+    id_tornei: 3,
+    nome_torneo: 'Coppa ArenaHub',
+    descrizione: 'Le iscrizioni sono terminate.',
+    gioco: 'League of Legends',
+    data_ora: '2026-10-22T16:00:00',
+    data_inizio_iscrizioni: '2026-10-01',
+    data_fine_iscrizioni: '2026-10-18',
+    posti_max: 16,
+    posti_occupati: 12,
+    stato: 'chiuso',
+  },
+]

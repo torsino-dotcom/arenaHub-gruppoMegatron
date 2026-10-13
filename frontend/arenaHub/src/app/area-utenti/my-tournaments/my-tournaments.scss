@@ -1,0 +1,48 @@
+.my-tournaments__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.my-tournaments__name {
+  margin-bottom: 0.25rem;
+  color: var(--ah-text);
+  font-size: 1.1rem;
+}
+
+.my-tournaments__details {
+  margin-bottom: 0.5rem;
+  color: var(--ah-text-muted);
+  font-size: 0.9rem;
+}
+
+.my-tournaments__status {
+  color: var(--ah-accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.my-tournaments__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.my-tournaments__cancel {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--ah-danger);
+  border-radius: var(--ah-radius-sm);
+  background: transparent;
+  color: var(--ah-danger);
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 767.98px) {
+  .my-tournaments__item,
+  .my-tournaments__actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

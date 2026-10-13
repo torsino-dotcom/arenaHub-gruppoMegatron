@@ -35,6 +35,12 @@
                             Profilo utente
                         </a>
 
+                        @if (authService.currentUser()?.ruolo === 'admin') {
+                        <a routerLink="/area-utenti/admin" (click)="closeUserMenu(); closeMenu()">
+                            Area Admin
+                        </a>
+                        }
+
                         <a routerLink="/area-utenti/tornei" (click)="closeUserMenu(); closeMenu()">
                             I miei tornei
                         </a>

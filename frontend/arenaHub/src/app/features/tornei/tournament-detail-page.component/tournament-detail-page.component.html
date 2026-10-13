@@ -1,3 +1,4 @@
+@if (tournament(); as tournament) {
 <section class="tournament-detail">
     <div class="container-xl">
         <a class="tournament-detail__back" routerLink="/tornei">
@@ -7,18 +8,18 @@
         <div class="tournament-detail__layout">
             <article class="tournament-detail__main">
                 <div class="tournament-detail__eyebrow">
-                    <span>{{ tournament().gioco }}</span>
-                    <span class="tournament-detail__status" [attr.data-status]="tournament().stato">
-                        {{ statusLabel(tournament().stato) }}
+                    <span>{{ tournament.gioco }}</span>
+                    <span class="tournament-detail__status" [attr.data-status]="tournament.stato">
+                        {{ statusLabel(tournament.stato) }}
                     </span>
                 </div>
 
                 <h1 class="tournament-detail__title">
-                    {{ tournament().nome_torneo }}
+                    {{ tournament.nome_torneo }}
                 </h1>
 
                 <p class="tournament-detail__description">
-                    {{ tournament().descrizione }}
+                    {{ tournament.descrizione }}
                 </p>
 
                 <section class="tournament-detail__section">
@@ -28,8 +29,8 @@
                         <div>
                             <dt>Inizio torneo</dt>
                             <dd>
-                                <time [attr.datetime]="tournament().data_ora">
-                                    {{ tournament().data_ora | date: 'dd/MM/yyyy, HH:mm' }}
+                                <time [attr.datetime]="tournament.data_ora">
+                                    {{ tournament.data_ora | date: 'dd/MM/yyyy, HH:mm' }}
                                 </time>
                             </dd>
                         </div>
@@ -37,8 +38,8 @@
                         <div>
                             <dt>Inizio iscrizioni</dt>
                             <dd>
-                                <time [attr.datetime]="tournament().data_inizio_iscrizioni">
-                                    {{ tournament().data_inizio_iscrizioni | date: 'dd/MM/yyyy' }}
+                                <time [attr.datetime]="tournament.data_inizio_iscrizioni">
+                                    {{ tournament.data_inizio_iscrizioni | date: 'dd/MM/yyyy' }}
                                 </time>
                             </dd>
                         </div>
@@ -46,8 +47,8 @@
                         <div>
                             <dt>Chiusura iscrizioni</dt>
                             <dd>
-                                <time [attr.datetime]="tournament().data_fine_iscrizioni">
-                                    {{ tournament().data_fine_iscrizioni | date: 'dd/MM/yyyy' }}
+                                <time [attr.datetime]="tournament.data_fine_iscrizioni">
+                                    {{ tournament.data_fine_iscrizioni | date: 'dd/MM/yyyy' }}
                                 </time>
                             </dd>
                         </div>
@@ -60,39 +61,55 @@
 
                 <p class="tournament-detail__capacity">
                     <strong>
-                        {{ tournament().posti_occupati }} / {{ tournament().posti_max }}
+                        {{ occupiedPlaces() }} / {{ tournament.posti_max }}
                     </strong>
                     iscritti
                 </p>
 
                 <div class="tournament-detail__progress" role="progressbar"
-                    [attr.aria-valuenow]="tournament().posti_occupati" [attr.aria-valuemin]="0"
-                    [attr.aria-valuemax]="tournament().posti_max" aria-label="Posti occupati">
+                    [attr.aria-valuenow]="tournament.posti_occupati" [attr.aria-valuemin]="0"
+                    [attr.aria-valuemax]="tournament.posti_max" aria-label="Posti occupati">
                     <span [style.width.%]="occupancyPercent()"></span>
                 </div>
 
-                @if (registrationIsOpen()) {
-                @if (isFull()) {
+                @if (!authService.isAuthenticated()) {
                 <p class="tournament-detail__notice">
-                    Il torneo è pieno. Puoi accedere per entrare in lista d’attesa.
+                    Accedi per iscriverti al torneo.
                 </p>
+
                 <a class="ah-button-primary tournament-detail__action" routerLink="/login">
                     Accedi per iscriverti
                 </a>
+                } @else if (currentRegistration(); as registration) {
+                <p class="tournament-detail__notice">
+                    @if (registration.status === 'confermato') {
+                    Sei iscritto al torneo.
+                    } @else {
+                    Sei in lista d'attesa.
+                    }
+                </p>
                 } @else {
                 <p class="tournament-detail__notice">
+                    @if (isFull()) {
+                    Il torneo è pieno: puoi entrare in lista d’attesa.
+                    } @else {
                     Le iscrizioni sono aperte.
+                    }
                 </p>
-                <a class="ah-button-primary tournament-detail__action" routerLink="/login">
-                    Accedi per iscriverti
-                </a>
-                }
-                } @else {
-                <p class="tournament-detail__notice">
-                    Le iscrizioni non sono disponibili in questo momento.
-                </p>
+
+                <button class="ah-button-primary tournament-detail__action" type="button" (click)="enroll()">
+                    @if (isFull()) {
+                    Entra in lista d'attesa
+                    } @else {
+                    Iscriviti al torneo
+                    }
+                </button>
                 }
             </aside>
         </div>
+        <app-tournament-matches [tournamentId]="tournament.id_tornei" />
     </div>
 </section>
+} @else {
+<p>Torneo non trovato.</p>
+}

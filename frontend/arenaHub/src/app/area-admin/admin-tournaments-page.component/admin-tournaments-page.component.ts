@@ -1,12 +1,12 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { TournamentStatus } from '../../features/tornei/tornei.model';
+import { TournamentDetail, TournamentStatus } from '../../features/tornei/tornei.model';
 import { NewTournament, TournamentStoreService } from '../../features/tornei/tournament-store.service';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
 @Component({
   imports: [RouterLink, DatePipe],
-  selector: 'app-admin-tournaments-page.component',
+  selector: 'app-admin-tournaments-page',
   styleUrl: './admin-tournaments-page.component.scss',
   templateUrl: './admin-tournaments-page.component.html',
 })
@@ -14,6 +14,7 @@ export class AdminTournamentsPageComponent {
   private readonly tournamentStore = inject(TournamentStoreService)
 
   readonly formOpen = signal(false)
+  readonly editingTournamentId = signal<number | null>(null)
   readonly errorMessage = signal<string | null>(null)
 
   readonly tournaments = computed(() =>
@@ -23,16 +24,7 @@ export class AdminTournamentsPageComponent {
     ),
   )
 
-  readonly form = signal<NewTournament>({
-    nome_torneo: '',
-    descrizione: '',
-    gioco: 'League of Legends',
-    data_ora: '',
-    data_inizio_iscrizioni: '',
-    data_fine_iscrizioni: '',
-    posti_max: 16,
-    stato: 'bozza',
-  })
+  readonly form = signal<NewTournament>(this.emptyForm())
 
   setText(
     field:
@@ -44,7 +36,7 @@ export class AdminTournamentsPageComponent {
       | 'data_fine_iscrizioni',
     event: Event,
   ): void {
-    const value = (event.target as HTMLInputElement).value
+    const value = (event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement).value
 
     this.form.update(current => ({
       ...current,
@@ -70,7 +62,25 @@ export class AdminTournamentsPageComponent {
     }))
   }
 
-  createTournament(event: Event): void {
+  editTournament(tournament: TournamentDetail): void {
+    this.errorMessage.set(null)
+    this.editingTournamentId.set(tournament.id_tornei)
+    this.form.set({
+      nome_torneo: tournament.nome_torneo,
+      descrizione: tournament.descrizione,
+      gioco: tournament.gioco,
+      // datetime-local vuole il valore senza i secondi
+      data_ora: tournament.data_ora.slice(0, 16),
+      data_inizio_iscrizioni: tournament.data_inizio_iscrizioni,
+      data_fine_iscrizioni: tournament.data_fine_iscrizioni,
+      posti_max: tournament.posti_max,
+      stato: tournament.stato,
+    })
+
+    this.formOpen.set(true)
+  }
+
+  saveTournament(event: Event): void {
     event.preventDefault()
     this.errorMessage.set(null)
 
@@ -91,16 +101,73 @@ export class AdminTournamentsPageComponent {
       return
     }
 
-    const dataOra = data.data_ora.length === 16
-      ? `${data.data_ora}:00`
-      : data.data_ora
-
-    this.tournamentStore.create({
+    const tournamentData: NewTournament = {
       ...data,
-      data_ora: dataOra,
-    })
+      data_ora: data.data_ora.length === 16
+        ? `${data.data_ora}:00`
+        : data.data_ora,
+    }
 
-    this.form.set({
+    const editingId = this.editingTournamentId()
+
+    if (editingId !== null) {
+      try {
+        const updated = this.tournamentStore.update(editingId, tournamentData)
+
+        if (!updated) {
+          this.errorMessage.set('Il torneo non è stato trovato.')
+          return
+        }
+      } catch (error) {
+        this.errorMessage.set(
+          error instanceof Error ? error.message : 'Impossibile aggiornare il torneo.'
+        )
+        return
+      }
+    } else {
+      this.tournamentStore.create(tournamentData)
+    }
+
+    this.closeForm()
+  }
+
+  deleteTournament(id: number, name: string): void {
+    const confirmed = window.confirm(`Vuoi eliminare il torneo "${name}"?`)
+
+    if (!confirmed) return
+
+    this.tournamentStore.delete(id)
+
+    if(this.editingTournamentId() === id) {
+      this.closeForm()
+    }
+  }
+
+  toggleForm(): void {
+    if(this.formOpen()) {
+      this.closeForm()
+      return
+    }
+
+    this.errorMessage.set(null)
+    this.editingTournamentId.set(null)
+    this.form.set(this.emptyForm())
+    this.formOpen.set(true)
+  }
+
+  statusLabel(status: TournamentStatus): string {
+    return status.replace('_', ' ')
+  }
+
+  private closeForm(): void {
+    this.formOpen.set(false)
+    this.editingTournamentId.set(null)
+    this.errorMessage.set(null)
+    this.form.set(this.emptyForm())
+  }
+
+  private emptyForm(): NewTournament {
+    return {
       nome_torneo: '',
       descrizione: '',
       gioco: 'League of Legends',
@@ -109,25 +176,6 @@ export class AdminTournamentsPageComponent {
       data_fine_iscrizioni: '',
       posti_max: 16,
       stato: 'bozza',
-    })
-
-    this.formOpen.set(false)
-  }
-
-  deleteTournament(id: number, name: string): void {
-    const confirmed = window.confirm(`Vuoi eliminare il torneo "${name}"?`)
-
-    if (confirmed) {
-      this.tournamentStore.delete(id)
     }
-  }
-
-  toggleForm(): void {
-    this.errorMessage.set(null)
-    this.formOpen.update(open => !open)
-  }
-
-  statusLabel(status: TournamentStatus): string {
-    return status.replace('_', ' ')
   }
 }

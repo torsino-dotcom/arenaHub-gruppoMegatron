@@ -13,8 +13,8 @@
   </header>
 
   @if (formOpen()) {
-  <form class="admin-tournaments__form ah-surface" (submit)="createTournament($event)">
-    <h2>Nuovo torneo</h2>
+  <form class="admin-tournaments__form ah-surface" (submit)="saveTournament($event)">
+    <h2>{{ editingTournamentId() !== null ? 'Modifica torneo' : 'Nuovo torneo'}}</h2>
 
     <div class="row g-3">
       <div class="col-12 col-md-6">
@@ -85,7 +85,7 @@
     }
 
     <button class="ah-button-primary mt-3" type="submit">
-      Salva torneo
+      {{ editingTournamentId() !== null ? 'Salva torneo' : 'Crea torneo'}}
     </button>
   </form>
   }
@@ -128,6 +128,14 @@
                 <a class="ah-button-primary" [routerLink]="['/tornei', tournament.id_tornei]">
                   Visualizza
                 </a>
+
+                <button
+                    class="admin-tournaments__edit"
+                    type="button"
+                    (click)="editTournament(tournament)"
+                >
+                    Modifica
+                </button>
 
                 <button class="admin-tournaments__delete" type="button" (click)="deleteTournament(
                           tournament.id_tornei,

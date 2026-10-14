@@ -36,4 +36,28 @@ export class TournamentStoreService {
             tournaments.filter(tournament => tournament.id_tornei !== id),
         )
     }
+
+    update(id: number, data: NewTournament): TournamentDetail | null {
+        const current = this.items().find(tournament => tournament.id_tornei === id)
+
+        if(!current) return null
+
+        if (data.posti_max < current.posti_occupati) {
+            throw new Error('I posti massimi non possono essere meno degli iscritti confermati')
+        }
+
+        const updated: TournamentDetail = {
+            ...current,
+            ...data,
+            id_tornei: id
+        }
+
+        this.items.update(tournaments =>
+            tournaments.map(tournament =>
+                tournament.id_tornei === id ? updated : tournament
+            )
+        )
+
+        return updated
+    }
 }

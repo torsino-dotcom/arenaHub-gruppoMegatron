@@ -76,7 +76,7 @@ Accesso: pubblico.
 **Body**
 
 ```json
-{ "username": "mrossi", "password": "********" }
+{ "email": "mrossi@gmail.com", "password": "********" }
 ```
 
 **Risposta 200:** restituisce l'utente (come in registrazione) e imposta il cookie di sessione. Errore `401` se le credenziali non sono valide.
@@ -336,12 +336,12 @@ Accesso: pubblico. Restituisce le righe di `partite` associate al torneo. Filtri
   {
     "id_partite": 101,
     "id_tornei": 3,
-    "nome_persona1": "Mario Rossi",
-    "nome_persona2": "Luca Bianchi",
+    "id_utenti1": 10,
+    "id_utenti2": 11,
     "orario_inizio": "2026-10-16T15:00:00",
     "punteggio_1": 2,
     "punteggio_2": 1,
-    "persona_vincitrice": "Mario Rossi",
+    "id_persona_vincitrice": 10,
     "formato_match": "eliminazione diretta",
     "stato": "conclusa",
     "fase": "quarti"

@@ -1,176 +1,189 @@
 .admin-tournaments {
-  display: grid;
-  gap: 1.5rem;
-  min-width: 0;
-  color: var(--ah-text);
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
     gap: 1.5rem;
-
-    h1 {
-      margin: 0;
-      color: var(--ah-text);
-      font-size: clamp(1.5rem, 2vw, 2rem);
-    }
-
-    > div > p:last-child {
-      margin: 0.5rem 0 0;
-      color: var(--ah-text-muted);
-    }
-
-    > button {
-      flex: 0 0 auto;
-      white-space: nowrap;
-    }
-  }
-
-  &__eyebrow {
-    margin: 0 0 0.35rem;
-    color: var(--ah-accent);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  &__form,
-  &__list {
     min-width: 0;
-    padding: clamp(1rem, 2vw, 1.5rem);
-    border: 1px solid var(--ah-border);
-    border-radius: var(--ah-radius-md);
-  }
-
-  &__form h2,
-  &__list h2 {
-    margin: 0 0 1.25rem;
     color: var(--ah-text);
-    font-size: 1.2rem;
-  }
 
-  .form-label {
-    color: var(--ah-text);
-    font-weight: 600;
-  }
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
 
-  .form-control,
-  .form-select {
-    border-color: var(--ah-border);
-    background-color: var(--ah-bg);
-    color: var(--ah-text);
-  }
+        h1 {
+            margin: 0;
+            color: var(--ah-text);
+            font-size: clamp(1.5rem, 2vw, 2rem);
+        }
 
-  .form-control:focus,
-  .form-select:focus {
-    border-color: var(--ah-accent);
-    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--ah-accent) 25%, transparent);
-  }
+        >div>p:last-child {
+            margin: 0.5rem 0 0;
+            color: var(--ah-text-muted);
+        }
 
-  &__error {
-    margin: 1rem 0 0;
-    color: var(--ah-danger);
-  }
-
-  .table-responsive {
-    min-width: 0;
-    border: 1px solid var(--ah-border);
-    border-radius: var(--ah-radius-sm);
-  }
-
-  &__table {
-    --bs-table-bg: transparent;
-    --bs-table-color: var(--ah-text);
-    --bs-table-border-color: var(--ah-border);
-    --bs-table-hover-bg: var(--ah-surface-hover);
-    --bs-table-hover-color: var(--ah-text);
-
-    min-width: 760px;
-    margin: 0;
-    vertical-align: middle;
-
-    th {
-      color: var(--ah-text-muted);
-      font-size: 0.75rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+        >button {
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
     }
 
-    th,
-    td {
-      padding: 0.9rem 1rem;
-      white-space: nowrap;
+    &__eyebrow {
+        margin: 0 0 0.35rem;
+        color: var(--ah-accent);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
     }
 
-    td:first-child {
-      min-width: 180px;
-      white-space: normal;
-      font-weight: 600;
-    }
-  }
-
-  &__status {
-    display: inline-flex;
-    padding: 0.3rem 0.65rem;
-    border: 1px solid var(--ah-border);
-    border-radius: 999px;
-    color: var(--ah-text-muted);
-    font-size: 0.8rem;
-    white-space: nowrap;
-
-    &[data-status='aperto'] {
-      border-color: var(--ah-success);
-      color: var(--ah-success);
+    &__form,
+    &__list {
+        min-width: 0;
+        padding: clamp(1rem, 2vw, 1.5rem);
+        border: 1px solid var(--ah-border);
+        border-radius: var(--ah-radius-md);
     }
 
-    &[data-status='in_corso'] {
-      border-color: var(--ah-live);
-      color: var(--ah-live);
+    &__form h2,
+    &__list h2 {
+        margin: 0 0 1.25rem;
+        color: var(--ah-text);
+        font-size: 1.2rem;
     }
 
-    &[data-status='concluso'],
-    &[data-status='chiuso'] {
-      color: var(--ah-text-muted);
+    .form-label {
+        color: var(--ah-text);
+        font-weight: 600;
     }
-  }
 
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    .ah-button-primary,
-    button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 2.25rem;
-      padding: 0.4rem 0.75rem;
-      font-size: 0.85rem;
-      line-height: 1;
-      white-space: nowrap;
+    .form-control,
+    .form-select {
+        border-color: var(--ah-border);
+        background-color: var(--ah-bg);
+        color: var(--ah-text);
     }
-  }
 
-  &__delete {
-    border: 1px solid var(--ah-danger);
-    border-radius: var(--ah-radius-sm);
-    background: transparent;
-    color: var(--ah-danger);
-    cursor: pointer;
-
-    &:hover {
-      background: var(--ah-danger);
-      color: var(--ah-text);
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--ah-accent);
+        box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--ah-accent) 25%, transparent);
     }
-  }
+
+    &__error {
+        margin: 1rem 0 0;
+        color: var(--ah-danger);
+    }
+
+    .table-responsive {
+        min-width: 0;
+        border: 1px solid var(--ah-border);
+        border-radius: var(--ah-radius-sm);
+    }
+
+    &__table {
+        --bs-table-bg: transparent;
+        --bs-table-color: var(--ah-text);
+        --bs-table-border-color: var(--ah-border);
+        --bs-table-hover-bg: var(--ah-surface-hover);
+        --bs-table-hover-color: var(--ah-text);
+
+        min-width: 900px;
+        margin: 0;
+        vertical-align: middle;
+
+        th {
+            color: var(--ah-text-muted);
+            font-size: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        th,
+        td {
+            padding: 0.9rem 1rem;
+            white-space: nowrap;
+        }
+
+        td:first-child {
+            min-width: 180px;
+            white-space: normal;
+            font-weight: 600;
+        }
+    }
+
+    &__status {
+        display: inline-flex;
+        padding: 0.3rem 0.65rem;
+        border: 1px solid var(--ah-border);
+        border-radius: 999px;
+        color: var(--ah-text-muted);
+        font-size: 0.8rem;
+        white-space: nowrap;
+
+        &[data-status='aperto'] {
+            border-color: var(--ah-success);
+            color: var(--ah-success);
+        }
+
+        &[data-status='in_corso'] {
+            border-color: var(--ah-live);
+            color: var(--ah-live);
+        }
+
+        &[data-status='concluso'],
+        &[data-status='chiuso'] {
+            color: var(--ah-text-muted);
+        }
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .ah-button-primary,
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 2.25rem;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.85rem;
+            line-height: 1;
+            white-space: nowrap;
+        }
+    }
+
+    &__delete {
+        border: 1px solid var(--ah-danger);
+        border-radius: var(--ah-radius-sm);
+        background: transparent;
+        color: var(--ah-danger);
+        cursor: pointer;
+
+        &:hover {
+            background: var(--ah-danger);
+            color: var(--ah-text);
+        }
+    }
+
+    &__edit {
+        border: 1px solid var(--ah-accent);
+        border-radius: var(--ah-radius-sm);
+        background: transparent;
+        color: var(--ah-accent);
+        cursor: pointer;
+
+        &:hover {
+            background: var(--ah-accent);
+            color: var(--ah-bg);
+        }
+    }
 }
 
 @media (max-width: 767.98px) {
-  .admin-tournaments__header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
+    .admin-tournaments__header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 }

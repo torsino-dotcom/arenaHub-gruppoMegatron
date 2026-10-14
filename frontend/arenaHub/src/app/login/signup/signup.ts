@@ -27,6 +27,8 @@ export class Signup {
 
   isFormValid = computed(() =>
     this.username().trim().length > 0 &&
+    this.name().trim().length > 0 &&
+    this.surname().trim().length > 0 &&
     this.email().trim().length > 0 &&
     this.password().length >= 6 &&
     this.password() === this.confirmPassword()
@@ -49,11 +51,13 @@ export class Signup {
     this.isLoading.set(true);
 
     try {
-      await this.authService.register(
-        this.username(),
-        this.email(),
-        this.password()
-      );
+      await this.authService.register({
+        nome: this.name().trim(),
+        cognome: this.surname().trim(),
+        username: this.username().trim(),
+        email: this.email().trim(),
+        password: this.password()
+      })
       await this.router.navigateByUrl('/');
     } catch (error) {
       this.errorMessage.set(

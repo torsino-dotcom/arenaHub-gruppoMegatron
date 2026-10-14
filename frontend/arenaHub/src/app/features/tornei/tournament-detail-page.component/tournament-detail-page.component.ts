@@ -1,12 +1,16 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
-import { TournamentDetail, TournamentStatus } from '../tornei.model';
+import { Component, computed, inject, Signal, signal } from '@angular/core';
+import { MyTournamentEnrollmentApi, TournamentDetail, TournamentStatus } from '../tornei.model';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../auth/auth.service';
-import { TournamentEnrollmentService } from '../tournament-enrollment.service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TournamentMatchesComponent } from '../tournament-matches.component/tournament-matches.component';
 import { TournamentStoreService } from '../tournament-store.service';
+import { TorneiApiService } from '../services/tornei-api.service';
+import { GiochiApiService } from '../../giochi/giochi-api.service';
+import { catchError, combineLatest, distinctUntilChanged, finalize, map, of, switchMap } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TournamentEnrollmentApiService } from '../services/tournament-enrollment-api.service';
 
 @Component({
   imports: [DatePipe, RouterLink, TournamentMatchesComponent],
@@ -16,43 +20,134 @@ import { TournamentStoreService } from '../tournament-store.service';
   templateUrl: './tournament-detail-page.component.html',
 })
 export class TournamentDetailPageComponent {
+  private readonly torneiApi = inject(TorneiApiService)
+  private readonly giochiApi = inject(GiochiApiService)
   private readonly route = inject(ActivatedRoute)
   private readonly tournamentStore = inject(TournamentStoreService)
+  readonly authService = inject(AuthService)
+  private readonly enrollmentApi = inject(TournamentEnrollmentApiService)
+
+  readonly tournamentLoading = signal(true)
+  readonly tournamentError = signal<string | null>(null)
+
+  readonly enrollmentLoading = signal(false)
+  readonly enrollmentError = signal<string | null>(null)
+  readonly enrollmentMessage = signal<string | null>(null)
+  private readonly enrollmentRefresh = signal(0)
 
   private readonly routeParams = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap
   })
 
-  readonly authService = inject(AuthService)
-  private readonly enrollmentService = inject(TournamentEnrollmentService)
+
 
   readonly isAdmin = computed(
     () => this.authService.currentUser()?.ruolo === 'admin'
   )
 
-  readonly tournament = computed(() => {
-    const id = Number(this.routeParams().get('id'))
+  private readonly games = toSignal(
+    this.giochiApi.getAll().pipe(
+      catchError(() => of([]))
+    ),
+    { initialValue: [] }
+  )
 
-    return this.tournamentStore.findById(id)
+  // readonly tournament = computed(() => {
+  //   const id = Number(this.routeParams().get('id'))
+
+  //   return this.tournamentStore.findById(id)
+  // })
+  private readonly apiTournament = toSignal(
+    this.route.paramMap.pipe(
+      map(params => Number(params.get('id'))),
+      distinctUntilChanged(),
+      switchMap(id => {
+        this.tournamentLoading.set(true)
+        this.tournamentError.set(null)
+
+        if (!Number.isInteger(id) || id <= 0) {
+          this.tournamentLoading.set(false)
+          return of(null)
+        }
+
+        return this.torneiApi.getById(id).pipe(
+          catchError(error => {
+            if (error.status !== 404) {
+              this.tournamentError.set('Non è stato possibile caricare il torneo.')
+            }
+
+            return of(null)
+          }),
+          finalize(() => this.tournamentLoading.set(false))
+        )
+      })
+    ),
+    { initialValue: null }
+  )
+  readonly tournament = computed<TournamentDetail | null>(() => {
+    const item = this.apiTournament()
+
+    if (!item) return null
+
+    const gioco = this.games().find(
+      game => game.id_giochi === item.id_giochi
+    )?.nome_giochi
+
+    return {
+      id_tornei: item.id_tornei,
+      nome_torneo: item.nome_torneo,
+      descrizione: item.descrizione,
+      gioco: gioco ?? 'Gioco non disponibile',
+      data_ora: item.data_ora,
+      data_inizio_iscrizioni: item.data_inizio_iscrizioni,
+      data_fine_iscrizioni: item.data_fine_iscrizioni,
+      posti_max: item.posti_max,
+      stato: item.stato,
+      posti_occupati: item.posti_occupati
+    }
   })
 
-  readonly currentRegistration = computed(() => {
+  readonly currentRegistration = computed<MyTournamentEnrollmentApi | null>(() => {
     const user = this.authService.currentUser()
     const tournament = this.tournament()
 
     if (!user || !tournament) return null
 
-    return this.enrollmentService.findActive(tournament.id_tornei, user.email)
+    return this.myEnrollments().find(
+      (registration: MyTournamentEnrollmentApi) =>
+        registration.id_tornei === tournament.id_tornei &&
+        registration.stato !== 'annullato'
+    ) ?? null
   })
 
-  readonly occupiedPlaces = computed(() => {
-    const tournament = this.tournament()
+  private readonly myEnrollments: Signal<MyTournamentEnrollmentApi[]> = toSignal(
+    combineLatest({
+      user: toObservable(this.authService.currentUser),
+      refresh: toObservable(this.enrollmentRefresh)
+    }).pipe(
+      switchMap(({ user }) =>
+        user
+          ? this.enrollmentApi.getMine().pipe(
+            catchError(() => {
+              this.enrollmentError.set('Non è stato possibile caricare le tue iscrizioni.')
+              return of([] as MyTournamentEnrollmentApi[])
+            })
+          )
+          : of([] as MyTournamentEnrollmentApi[])
+      )
+    ),
+    { initialValue: [] as MyTournamentEnrollmentApi[] }
+  )
 
-    if (!tournament) return 0
+  // readonly occupiedPlaces = computed(() => {
+  //   const tournament = this.tournament()
 
-    return tournament.posti_occupati +
-      this.enrollmentService.confirmedCount(tournament.id_tornei)
-  })
+  //   if (!tournament) return 0
+
+  //   return tournament.posti_occupati +
+  //     this.enrollmentService.confirmedCount(tournament.id_tornei)
+  // })
+  readonly occupiedPlaces = computed(() => this.tournament()?.posti_occupati ?? 0)
 
 
 
@@ -87,13 +182,35 @@ export class TournamentDetailPageComponent {
     const user = this.authService.currentUser()
     const tournament = this.tournament()
 
-    if (!user || !tournament || !this.registrationIsOpen()) {
+    if (!user || !tournament || !this.registrationIsOpen() || this.enrollmentLoading()) {
       return
     }
 
-    this.enrollmentService.enroll(tournament, user)
-  }
+    this.enrollmentError.set(null)
+    this.enrollmentMessage.set(null)
+    this.enrollmentLoading.set(true)
 
+    this.enrollmentApi.enroll(tournament.id_tornei).subscribe({
+      next: () => {
+        this.enrollmentMessage.set('Iscrizione inviata con successo.')
+        this.enrollmentLoading.set(false)
+        this.enrollmentRefresh.update(value => value + 1)
+      },
+      error: (error: unknown) => {
+        // MODIFICA: mostra il messaggio specifico restituito dall'API, se presente
+        if (error instanceof HttpErrorResponse) {
+          const body = error.error as { errore?: string; messaggio?: string } | null
+          this.enrollmentError.set(
+            body?.errore ?? body?.messaggio ?? 'Non è stato possibile iscriversi al torneo.'
+          )
+        } else {
+          this.enrollmentError.set('Non è stato possibile iscriversi al torneo.')
+        }
+
+        this.enrollmentLoading.set(false)
+      }
+    })
+  }
   statusLabel(status: TournamentStatus): string {
     const label = status.replace('_', ' ')
     return label.charAt(0).toLocaleLowerCase() + label.slice(1)

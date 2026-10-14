@@ -1,4 +1,8 @@
-import { computed, Injectable, signal } from "@angular/core"
+import { computed, inject, Injectable, signal } from "@angular/core"
+import { AuthApiService } from "./auth-api.service"
+import { LoginApiRequest, RegisterApiRequest } from "./auth.model"
+import { firstValueFrom } from "rxjs"
+import { HttpErrorResponse } from "@angular/common/http"
 
 export type UserRole = 'utente' | 'admin'
 
@@ -16,78 +20,71 @@ interface MockAccount extends AuthUser {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private readonly accounts = signal<MockAccount[]>([
-        {
-            username: 'ArenaTester',
-            email: 'tester@arenahub.it',
-            password: 'arena123',
-            ruolo: 'utente'
-        },
-        {
-            username: 'ArenaAdmin',
-            email: 'admin@arenahub.it',
-            password: 'admin123',
-            ruolo: 'admin',
-        }
-    ])
-
+    private readonly authApi = inject(AuthApiService)
     private readonly user = signal<AuthUser | null>(null)
+    // private readonly accounts = signal<MockAccount[]>([
+    //     {
+    //         username: 'ArenaTester',
+    //         email: 'tester@arenahub.it',
+    //         password: 'arena123',
+    //         ruolo: 'utente'
+    //     },
+    //     {
+    //         username: 'ArenaAdmin',
+    //         email: 'admin@arenahub.it',
+    //         password: 'admin123',
+    //         ruolo: 'admin',
+    //     }
+    // ])
+
 
     readonly currentUser = this.user.asReadonly()
     readonly isAuthenticated = computed(() => this.user() !== null)
 
-    async login(email: string, password: string): Promise<void> {
-        await this.simulateRequest()
-
-        const normalizedEmail = email.trim().toLocaleLowerCase()
-        const account = this.accounts().find(
-            user => user.email.toLocaleLowerCase() === normalizedEmail &&
-                user.password === password
-        )
-
-        if (!account) {
-            throw new Error('Email o password non corretti.')
+    async login(data: LoginApiRequest): Promise<void> {
+        try {
+            const user = await firstValueFrom(this.authApi.login(data))
+            this.user.set(user)
+        } catch (error) {
+            throw this.toAuthError(error, 'Accesso non riuscito.')
         }
-
-        this.user.set({
-            username: account.username,
-            email: account.email,
-            ruolo: account.ruolo
-        })
     }
 
-    async register(username: string, email: string, password: string): Promise<void> {
-        await this.simulateRequest()
-
-        const normalizedEmail = email.trim().toLocaleLowerCase()
-        const emailExists = this.accounts().some(
-            account => account.email.toLowerCase() === normalizedEmail
-        )
-
-        if (emailExists) {
-            throw new Error('Esiste già un account con questa email.')
+    async register(data: RegisterApiRequest): Promise<void> {
+        try {
+            const user = await firstValueFrom(this.authApi.register(data))
+            this.user.set(user)
+        } catch (error) {
+            throw this.toAuthError(error, 'Registrazione non riuscita.')
         }
-
-        const account: MockAccount = {
-            username: username.trim(),
-            email: normalizedEmail,
-            ruolo: 'utente',
-            password
-        }
-
-        this.accounts.update(accounts => [...accounts, account])
-        this.user.set({
-            username: account.username,
-            email: account.email,
-            ruolo: account.ruolo
-        })
     }
+
+    private toAuthError(error: unknown, fallback: string): Error {
+        if (error instanceof HttpErrorResponse) {
+            const body = error.error as
+                | { messaggio?: unknown; message?: unknown; error?: unknown }
+                | string
+                | null
+
+            if (typeof body === 'string') {
+                return new Error(body)
+            }
+
+            const message = body?.messaggio ?? body?.message ?? body?.error
+
+            if (typeof message === 'string') {
+                return new Error(message)
+            }
+        }
+
+        return error instanceof Error ? error : new Error(fallback)
+    }
+
 
     logout(): void {
         this.user.set(null)
+        void firstValueFrom(this.authApi.logout()).catch(() => undefined)
     }
 
-    private simulateRequest(): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, 500))
-    }
+
 }

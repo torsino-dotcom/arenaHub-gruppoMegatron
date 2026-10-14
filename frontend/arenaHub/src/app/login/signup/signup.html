@@ -27,14 +27,14 @@
               <label for="name" class="form-label">Nome</label>
               <input 
                 type="text" class="form-control" id="name" placeholder="Il tuo nome" 
-                [ngModel]="name()" (ngModelChange)="name.set($event)" name="name">
+                [ngModel]="name()" (ngModelChange)="name.set($event)" name="name" required>
             </div>
 
             <div class="mb-3">
               <label for="surname" class="form-label">Cognome</label>
               <input 
                 type="text" class="form-control" id="surname" placeholder="Il tuo cognome" 
-                [ngModel]="surname()" (ngModelChange)="surname.set($event)" name="surname">
+                [ngModel]="surname()" (ngModelChange)="surname.set($event)" name="surname" required>
             </div>
 
             <div class="mb-3">

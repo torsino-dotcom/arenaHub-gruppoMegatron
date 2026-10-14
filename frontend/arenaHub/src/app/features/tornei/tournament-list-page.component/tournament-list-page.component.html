@@ -15,12 +15,15 @@
                     [value]="searchTerm()" (input)="setSearchTerm($event)" />
             </div>
 
+            @if (gamesError(); as error) {
+            <p role="alert">{{ error }}</p>
+            }
             <div>
                 <label for="tournament-game">Gioco</label>
                 <select id="tournament-game" class="form-select" [value]="selectedGame()" (change)="setGame($event)">
                     <option value="tutti">Tutti i giochi</option>
-                    @for (game of games(); track game) {
-                    <option [value]="game">{{ game }}</option>
+                    @for (game of games(); track game.id_giochi) {
+                    <option [value]="game.nome_giochi">{{ game.nome_giochi }}</option>
                     }
                 </select>
             </div>
@@ -37,32 +40,32 @@
                 </select>
             </div>
 
-            <button 
-                class="tournament-filters__reset"
-                type="button"
-                (click)="resetFilters()"
-            >
+            <button class="tournament-filters__reset" type="button" (click)="resetFilters()">
                 Azzera filtri
             </button>
         </section>
 
-        @if (filteredTournaments().length > 0) {
-            <p class="tournament-list__count" aria-live="polite">
-                {{ filteredTournaments().length }}
-                {{ filteredTournaments().length === 1 ? 'torneo trovato' : 'tornei trovati'}}
-            </p>
+        @if (tournamentsLoading()) {
+        <p>Caricamento tornei…</p>
+        } @else if (tournamentsError(); as error) {
+        <p role="alert">{{ error }}</p>
+        } @else if (filteredTournaments().length > 0) {
+        <p class="tournament-list__count" aria-live="polite">
+            {{ filteredTournaments().length }}
+            {{ filteredTournaments().length === 1 ? 'torneo trovato' : 'tornei trovati'}}
+        </p>
 
-            <div class="row g-4">
-                @for (tournament of filteredTournaments(); track tournament.id_tornei) {
-                    <div class="col-12 col-md-6 col-xl-4">
-                        <app-tournament-card [tournament]="tournament"/>
-                    </div>
-                }
+        <div class="row g-4">
+            @for (tournament of filteredTournaments(); track tournament.id_tornei) {
+            <div class="col-12 col-md-6 col-xl-4">
+                <app-tournament-card [tournament]="tournament" />
             </div>
+            }
+        </div>
         } @else {
-            <p class="tournament-list__empty">
-                Nessun torneo trovato
-            </p>
+        <p class="tournament-list__empty">
+            Nessun torneo trovato
+        </p>
         }
     </div>
 </section>

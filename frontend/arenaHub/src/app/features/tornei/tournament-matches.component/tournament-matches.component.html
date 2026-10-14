@@ -117,7 +117,11 @@
   </form>
   }
 
-  @if (matches().length > 0) {
+  @if (matchesLoading()) {
+  <p>Caricamento partite…</p>
+  } @else if (matchesError(); as error) {
+  <p class="tournament-matches__error" role="alert">{{ error }}</p>
+  } @else if (matches().length > 0) {
   <div class="tournament-matches__list">
     @for (match of matches(); track match.id_partite) {
     <article class="tournament-match">

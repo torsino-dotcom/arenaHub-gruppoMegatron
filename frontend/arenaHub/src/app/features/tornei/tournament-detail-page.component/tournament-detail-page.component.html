@@ -1,4 +1,8 @@
-@if (tournament(); as tournament) {
+@if (tournamentLoading()) {
+<p>Caricamento torneo…</p>
+} @else if (tournamentError(); as error) {
+<p role="alert">{{ error }}</p>
+} @else if (tournament(); as tournament) {
 <section class="tournament-detail">
     <div class="container-xl">
         <a class="tournament-detail__back" routerLink="/tornei">
@@ -82,7 +86,7 @@
                 </a>
                 } @else if (currentRegistration(); as registration) {
                 <p class="tournament-detail__notice">
-                    @if (registration.status === 'confermato') {
+                    @if (registration.stato === 'confermato') {
                     Sei iscritto al torneo.
                     } @else {
                     Sei in lista d'attesa.
@@ -98,7 +102,9 @@
                 </p>
 
                 <button class="ah-button-primary tournament-detail__action" type="button" (click)="enroll()">
-                    @if (isFull()) {
+                    @if (enrollmentLoading()) {
+                    Invio in corso...
+                    } @else if (isFull()) {
                     Entra in lista d'attesa
                     } @else {
                     Iscriviti al torneo

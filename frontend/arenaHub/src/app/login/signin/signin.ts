@@ -19,11 +19,11 @@ export class Signin {
 
   email = signal('');
   password = signal('');
-  
+
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
-  isFormValid = computed(() => 
+  isFormValid = computed(() =>
     this.email().trim().length > 0 && this.password().length >= 6
   )
 
@@ -39,7 +39,10 @@ export class Signin {
     this.isLoading.set(true);
 
     try {
-      await this.authService.login(this.email(), this.password())
+      await this.authService.login({
+        email: this.email().trim(),
+        password: this.password()
+      })
       await this.router.navigateByUrl('/')
     } catch (error) {
       this.errorMessage.set(

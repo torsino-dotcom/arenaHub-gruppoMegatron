@@ -1,5 +1,6 @@
 import { ViewportScroller } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { GameCardData } from '../../shared/game-card-data';
 import { HomeHeroComponent } from '../../shared/components/home-hero.component/home-hero.component';
 import { GameGridComponent } from '../../shared/components/game-grid.component/game-grid.component';
@@ -13,6 +14,7 @@ import { HomeTournamentsPreviewComponent } from '../home-tournaments-preview.com
 })
 export class HomePageComponent {
   private viewportScroller = inject(ViewportScroller)
+  private router = inject(Router);
 
   //! dati provvisori
   games = signal<GameCardData[]>([
@@ -30,5 +32,7 @@ export class HomePageComponent {
 
   selectGame(game: GameCardData): void {
     this.selectedGame.set(game)
+
+    this.router.navigate(['/tornei'], { queryParams: { game: game.name } });
   }
 }

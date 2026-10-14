@@ -1,5 +1,5 @@
-<button class="game-card" type="button" [attr.aria-label]="'Mostra i tornei di ' + game().name">
-
+<button class="game-card" type="button" (click)="selectGame()" [attr.aria-label]="'Mostra i tornei di ' + game().name">
+    
     @if (game().imageUrl) {
     <img class="game-card__image" [src]="game().imageUrl" [alt]="''" loading="lazy" />
     } @else {

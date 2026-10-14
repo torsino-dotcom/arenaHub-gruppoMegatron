@@ -21,7 +21,7 @@ public class Torneo {
     @Column(name = "id_tornei")
     private Long id;
 
-    @Column(name = "nome_torneo")
+    @Column(name = "nome")
     private String nomeTorneo;
 
     @Column(length = 1000)
@@ -49,7 +49,7 @@ public class Torneo {
     private String urlImg;
 
     public Torneo() {
-        this.stato = "bozza";
+        this.stato = "aperto";
     }
 
     public Long getId() {

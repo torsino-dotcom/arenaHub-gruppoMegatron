@@ -23,7 +23,7 @@ public class TorneoController {
     @Autowired
     private SessioneService sessioneService;
 
-    // 16. Elenco e filtri (pubblico; le bozze le vede solo l'admin)
+    // 16. Elenco e filtri (pubblico). "gioco" può essere l'id o il nome del gioco
     @GetMapping
     public List<TorneoRisposta> listaTornei(
             @RequestParam(required = false) String gioco,
@@ -33,13 +33,13 @@ public class TorneoController {
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer limit) {
-        return torneoService.elenca(gioco, stato, dataDa, dataA, q, sessioneService.isAdmin(), page, limit);
+        return torneoService.elenca(gioco, stato, dataDa, dataA, q, page, limit);
     }
 
     // 17. Dettaglio (pubblico)
     @GetMapping("/{id_tornei}")
     public TorneoRisposta getTorneoById(@PathVariable("id_tornei") Long idTornei) {
-        return torneoService.dettaglio(idTornei, sessioneService.isAdmin());
+        return torneoService.dettaglio(idTornei);
     }
 
     // 18. Creazione (admin)

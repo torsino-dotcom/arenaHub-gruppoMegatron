@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UtenteRepository extends JpaRepository<Utente, Long> {
 
-    // Utili per login e controllo duplicati in registrazione
-    Utente findByUsername(String username);
+    // Utili per il login (con email) e per il controllo duplicati
+    Utente findByEmail(String email);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
 }

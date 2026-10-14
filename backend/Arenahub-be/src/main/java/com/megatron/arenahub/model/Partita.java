@@ -41,8 +41,8 @@ public class Partita {
     @Column(name = "punteggio_2")
     private int punteggioGiocatore2;
 
-    @Column(name = "persona_vincitrice")
-    private String personaVincitrice;
+    @Column(name = "id_persona_vincitrice")
+    private Long idPersonaVincitrice;
 
     @Column(name = "formato_match")
     private String formatoMatch;
@@ -112,12 +112,12 @@ public class Partita {
         this.punteggioGiocatore2 = punteggioGiocatore2;
     }
 
-    public String getPersonaVincitrice() {
-        return personaVincitrice;
+    public Long getIdPersonaVincitrice() {
+        return idPersonaVincitrice;
     }
 
-    public void setPersonaVincitrice(String personaVincitrice) {
-        this.personaVincitrice = personaVincitrice;
+    public void setIdPersonaVincitrice(Long idPersonaVincitrice) {
+        this.idPersonaVincitrice = idPersonaVincitrice;
     }
 
     public String getFormatoMatch() {

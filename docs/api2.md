@@ -489,7 +489,7 @@ Errori: 400 per valori non validi, 403 se l'utente non è admin.
 | 8 | GET | `/api/utenti/{id_utenti}` | admin |
 | 9 | PATCH | `/api/utenti/{id_utenti}` | admin |
 | 10 | DELETE | `/api/utenti/{id_utenti}` | admin |
-| 11 | GET | `/api/tornei/{id_tornei}/iscrizioni` | pubblico |
+| 11 | GET | `/api/tornei/{id_tornei}/iscrizioni` | admin |
 | 12 | POST | `/api/tornei/{id_tornei}/iscrizioni` | autenticato |
 | 13 | DELETE | `/api/tornei/{id_tornei}/iscrizioni` | autenticato |
 | 14 | PATCH | `/api/tornei/{id_tornei}/iscrizioni/{id_utenti_tornei}` | admin |

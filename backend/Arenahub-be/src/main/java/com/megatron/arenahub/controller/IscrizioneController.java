@@ -22,15 +22,14 @@ public class IscrizioneController {
     @Autowired
     private SessioneService sessioneService;
 
-    // 11. Iscrizioni di un torneo (pubblico)
+    // 11. Iscrizioni di un torneo (admin, come nel riepilogo di api2.md)
     @GetMapping
     public Map<String, List<IscrizioneRisposta>> getIscrittiTorneo(@PathVariable("id_tornei") Long idTornei,
                                                                    @RequestParam(required = false) String stato,
                                                                    @RequestParam(required = false) Integer page,
                                                                    @RequestParam(required = false) Integer limit) {
-        List<IscrizioneRisposta> iscrizioni =
-                iscrizioneService.elencoPerTorneo(idTornei, stato, sessioneService.isAdmin(), page, limit);
-        return Map.of("iscrizioni", iscrizioni);
+        sessioneService.richiediAdmin();
+        return Map.of("iscrizioni", iscrizioneService.elencoPerTorneo(idTornei, stato, page, limit));
     }
 
     // 12. Iscriversi a un torneo (autenticato)
@@ -55,7 +54,7 @@ public class IscrizioneController {
                                             @PathVariable("id_utenti_tornei") Long idUtentiTornei,
                                             @RequestBody IscrizioneModificaRichiesta richiesta) {
         sessioneService.richiediAdmin();
-        return iscrizioneService.modificaStato(idTornei, idUtentiTornei, richiesta.stato());
+        return iscrizioneService.modificaStato(idTornei, idUtentiTornei, richiesta.getStato());
     }
 
     // 15. Rimuovere un'iscrizione (admin)

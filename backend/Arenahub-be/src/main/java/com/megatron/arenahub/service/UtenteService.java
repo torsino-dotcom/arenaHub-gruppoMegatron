@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UtenteService {
@@ -45,7 +46,7 @@ public class UtenteService {
                 .filter(u -> username == null
                         || (u.getUsername() != null && u.getUsername().toLowerCase().contains(username.toLowerCase())))
                 .map(this::aRisposta)
-                .toList();
+                .collect(Collectors.toList());
         return Paginazione.applica(risultato, page, limit);
     }
 
@@ -68,47 +69,47 @@ public class UtenteService {
     }
 
     private void applicaModifiche(Utente u, UtenteModificaRichiesta r, boolean admin) {
-        if (r.nome() != null) {
-            if (r.nome().isBlank()) {
+        if (r.getNome() != null) {
+            if (r.getNome().isBlank()) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "Nome non valido");
             }
-            u.setNome(r.nome());
+            u.setNome(r.getNome());
         }
-        if (r.cognome() != null) {
-            if (r.cognome().isBlank()) {
+        if (r.getCognome() != null) {
+            if (r.getCognome().isBlank()) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "Cognome non valido");
             }
-            u.setCognome(r.cognome());
+            u.setCognome(r.getCognome());
         }
-        if (r.username() != null) {
-            if (r.username().isBlank()) {
+        if (r.getUsername() != null) {
+            if (r.getUsername().isBlank()) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "Username non valido");
             }
-            if (!r.username().equals(u.getUsername()) && utenteRepository.existsByUsername(r.username())) {
+            if (!r.getUsername().equals(u.getUsername()) && utenteRepository.existsByUsername(r.getUsername())) {
                 throw new ApiException(HttpStatus.CONFLICT, "Username già in uso");
             }
-            u.setUsername(r.username());
+            u.setUsername(r.getUsername());
         }
-        if (r.email() != null) {
-            if (r.email().isBlank() || !r.email().contains("@")) {
+        if (r.getEmail() != null) {
+            if (r.getEmail().isBlank() || !r.getEmail().contains("@")) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "Email non valida");
             }
-            if (!r.email().equals(u.getEmail()) && utenteRepository.existsByEmail(r.email())) {
+            if (!r.getEmail().equals(u.getEmail()) && utenteRepository.existsByEmail(r.getEmail())) {
                 throw new ApiException(HttpStatus.CONFLICT, "Email già in uso");
             }
-            u.setEmail(r.email());
+            u.setEmail(r.getEmail());
         }
-        if (!admin && r.password() != null) {
-            if (Validazione.mancante(r.password())) {
+        if (!admin && r.getPassword() != null) {
+            if (Validazione.mancante(r.getPassword())) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "Password non valida");
             }
-            u.setPassword(passwordEncoder.encode(r.password()));
+            u.setPassword(passwordEncoder.encode(r.getPassword()));
         }
-        if (admin && r.ruolo() != null) {
-            if (!RUOLI.contains(r.ruolo())) {
+        if (admin && r.getRuolo() != null) {
+            if (!RUOLI.contains(r.getRuolo())) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "Ruolo non valido (utente, admin)");
             }
-            u.setRuolo(r.ruolo());
+            u.setRuolo(r.getRuolo());
         }
     }
 

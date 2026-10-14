@@ -8,9 +8,10 @@ import { TournamentDetailPageComponent } from './features/tornei/tournament-deta
 import { AreaUtenti } from './area-utenti/area-utenti/area-utenti';
 import { Profile } from './area-utenti/profile/profile';
 import { MyTournaments } from './area-utenti/my-tournaments/my-tournaments';
-import { Settings} from './area-utenti/settings/settings';
-import { AreaAdmin } from './area-admin/area-admin/area-admin';
+import { Settings } from './area-utenti/settings/settings';
 import { adminGuard } from './auth/guard/admin.guard';
+import { AdminAreaComponent } from './area-admin/admin-area.component/admin-area.component';
+import { AdminTournamentsPageComponent } from './area-admin/admin-tournaments-page.component/admin-tournaments-page.component';
 
 export const routes: Routes = [
   {
@@ -48,16 +49,26 @@ export const routes: Routes = [
             path: 'profilo', component: Profile
           },
           {
-            path: 'admin', canActivate: [adminGuard], component: AreaAdmin
-          },
-          {
             path: 'tornei', component: MyTournaments
           },
           {
             path: 'impostazioni', component: Settings
           },
         ],
-      }
+      },
+      {
+        path: 'admin',
+        component: AdminAreaComponent,
+        canActivate: [adminGuard],
+        children: [
+          { 
+            path: '', pathMatch: 'full', redirectTo: 'tornei' 
+          },
+          { 
+            path: 'tornei', component: AdminTournamentsPageComponent 
+          },
+        ],
+      },
     ],
   },
   {

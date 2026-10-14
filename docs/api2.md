@@ -11,8 +11,8 @@ Gli endpoint e i campi descritti qui seguono le tabelle mostrate in `arenaHub.dr
 - **Ruoli** (colonna `ruolo`): `utente`, `admin`.
 - **Password:** salvata solo come hash; non viene mai restituita nelle risposte.
 - **Valori di `stato`:**
-  - `tornei.stato`: `bozza`, `aperto`, `chiuso`, `in_corso`, `concluso`
-  - `utenti_tornei.stato`: `confermato`, `in_attesa`, `annullato`
+  - `tornei.stato`: `aperto`, `chiuso`, `concluso`
+  - `utenti_tornei.stato`: `Confermato`, `in_coda`
   - `partite.stato`: `programmata`, `in_corso`, `conclusa`
 - **Paginazione (liste):** parametri facoltativi `page` (default 1) e `limit` (default 20).
 - **Errori:** formato unico
@@ -119,7 +119,7 @@ Accesso: utente autenticato. Restituisce le iscrizioni dell'utente con i dati es
     "data_iscrizione": "2026-10-12",
     "stato": "confermato",
     "nome_torneo": "Torneo d'autunno",
-    "gioco": "Calcio virtuale",
+    "id_giochi": 16,
     "data_ora": "2026-10-16T15:00:00"
   }
 ]
@@ -191,7 +191,7 @@ Accesso: utente autenticato. Nessun body. `id_utenti` è ricavato dalla sessione
 Regole:
 - il torneo deve avere `stato: "aperto"` e la data odierna deve essere compresa tra `data_inizio_iscrizioni` e `data_fine_iscrizioni`, altrimenti `422`;
 - l'utente non può essere già iscritto (iscrizione non annullata), altrimenti `409`;
-- se gli iscritti `confermato` hanno raggiunto `posti_max`, l'iscrizione viene registrata con `stato: "in_attesa"`.
+- se gli iscritti `confermato` hanno raggiunto `posti_max`, l'iscrizione viene registrata con `stato: "in_coda"`.
 
 **Risposta 201**
 
@@ -209,7 +209,7 @@ Regole:
 
 #### `DELETE /api/tornei/{id_tornei}/iscrizioni`
 
-Accesso: utente autenticato. Annulla l'iscrizione dell'utente autenticato, identificata dalla coppia `id_utenti` e `id_tornei`. Se si libera un posto, la prima iscrizione `in_attesa` (per `data_iscrizione`) passa a `confermato`.
+Accesso: utente autenticato. Annulla l'iscrizione dell'utente autenticato, identificata dalla coppia `id_utenti` e `id_tornei`. Se si libera un posto, la prima iscrizione `in_coda` (per `data_iscrizione`) passa a `confermato`.
 
 **Risposta 200**
 
@@ -223,7 +223,7 @@ Errore `404` se l'utente non è iscritto.
 
 #### `PATCH /api/tornei/{id_tornei}/iscrizioni/{id_utenti_tornei}`
 
-Accesso: admin. Permette di confermare un'iscrizione in attesa o annullarla. Body: `{ "stato": "confermato" }`. Errore `422` se si supera `posti_max`. **Risposta 200:** iscrizione aggiornata.
+Accesso: admin. Permette di confermare un'iscrizione in coda o annullarla. Body: `{ "stato": "confermato" }`. Errore `422` se si supera `posti_max`. **Risposta 200:** iscrizione aggiornata.
 
 ### 15. Rimuovere un'iscrizione (admin)
 
@@ -249,7 +249,7 @@ Accesso: pubblico. Filtri facoltativi: `gioco`, `stato`, `data_da`, `data_a` (in
     "id_tornei": 3,
     "nome_torneo": "Torneo d'autunno",
     "descrizione": "Torneo amatoriale",
-    "gioco": "Calcio virtuale",
+    "id_giochi": 16,
     "data_ora": "2026-10-16T15:00:00",
     "data_inizio_iscrizioni": "2026-10-01",
     "data_fine_iscrizioni": "2026-10-15",
@@ -272,7 +272,7 @@ Accesso: pubblico. Restituisce i campi della tabella `tornei` più il campo calc
   "id_tornei": 3,
   "nome_torneo": "Torneo d'autunno",
   "descrizione": "Torneo amatoriale",
-  "gioco": "Calcio virtuale",
+  "id_giochi": 16,
   "data_ora": "2026-10-16T15:00:00",
   "data_inizio_iscrizioni": "2026-10-01",
   "data_fine_iscrizioni": "2026-10-15",
@@ -294,7 +294,7 @@ Accesso: admin. `id_tornei` viene generato dal database. Validazioni: `data_iniz
 {
   "nome_torneo": "Torneo d'autunno",
   "descrizione": "Torneo amatoriale",
-  "gioco": "Calcio virtuale",
+  "id_giochi": 16,
   "data_ora": "2026-10-16T15:00:00",
   "data_inizio_iscrizioni": "2026-10-01",
   "data_fine_iscrizioni": "2026-10-15",
@@ -309,7 +309,7 @@ Accesso: admin. `id_tornei` viene generato dal database. Validazioni: `data_iniz
 
 #### `PATCH /api/tornei/{id_tornei}`
 
-Accesso: admin. Il body può contenere uno o più campi modificabili di `tornei`: `nome_torneo`, `descrizione`, `gioco`, `data_ora`, `data_inizio_iscrizioni`, `data_fine_iscrizioni`, `posti_max`, `stato`. `id_tornei` non è modificabile. `posti_max` non può scendere sotto il numero di iscritti confermati (`422`).
+Accesso: admin. Il body può contenere uno o più campi modificabili di `tornei`: `nome_torneo`, `descrizione`, `id_giochi`, `data_ora`, `data_inizio_iscrizioni`, `data_fine_iscrizioni`, `posti_max`, `stato`. `id_tornei` non è modificabile. `posti_max` non può scendere sotto il numero di iscritti confermati (`422`).
 
 **Risposta 200:** torneo aggiornato.
 
@@ -365,12 +365,12 @@ Accesso: admin. `id_partite` viene generato dal database e `id_tornei` è ricava
 
 ```json
 {
-  "nome_persona1": "Mario Rossi",
-  "nome_persona2": "Luca Bianchi",
+  "id_utenti1": 10,
+  "id_utenti2": 11,
   "orario_inizio": "2026-10-16T15:00:00",
   "punteggio_1": 0,
   "punteggio_2": 0,
-  "persona_vincitrice": null,
+  "id_persona_vincitrice": null,
   "formato_match": "eliminazione diretta",
   "stato": "programmata",
   "fase": "quarti"
@@ -383,7 +383,7 @@ Accesso: admin. `id_partite` viene generato dal database e `id_tornei` è ricava
 
 #### `PATCH /api/partite/{id_partite}`
 
-Accesso: admin. Il body può contenere i campi da aggiornare: `nome_persona1`, `nome_persona2`, `orario_inizio`, `punteggio_1`, `punteggio_2`, `persona_vincitrice`, `formato_match`, `stato`, `fase`. `id_partite` e `id_tornei` non sono modificabili da questo endpoint. Se presente, `persona_vincitrice` deve coincidere con `nome_persona1` o `nome_persona2` (`422` altrimenti).
+Accesso: admin. Il body può contenere i campi da aggiornare: `id_utenti1`, `id_utenti2`, `orario_inizio`, `punteggio_1`, `punteggio_2`, `id_persona_vincitrice`, `formato_match`, `stato`, `fase`. `id_partite` e `id_tornei` non sono modificabili da questo endpoint. Se presente, `persona_vincitrice` deve coincidere con `nome_persona1` o `nome_persona2` (`422` altrimenti).
 
 **Body di esempio per registrare il risultato**
 
@@ -391,7 +391,7 @@ Accesso: admin. Il body può contenere i campi da aggiornare: `nome_persona1`, `
 {
   "punteggio_1": 2,
   "punteggio_2": 1,
-  "persona_vincitrice": "Mario Rossi",
+  "id_persona_vincitrice": 11,
   "stato": "conclusa"
 }
 ```
@@ -407,7 +407,7 @@ Accesso: admin. **Risposta 200:** `{ "messaggio": "Partita eliminata" }`
 I nomi dei partecipanti sono testuali nel diagramma; non sono mostrati campi `id_utenti` per collegare una partita agli utenti.
 
 ### 26. Consultare un gioco
-GET /api/giochi
+GET /api/giochi/{id_giochi}
 Accesso: pubblico. Restituisce l'elenco di tutti i giochi disponibili nel sistema (collegati alla tabella giochi del diagramma). Supporta la paginazione (page, limit).
 
 Risposta 200
@@ -415,7 +415,7 @@ Risposta 200
 
 ```json
   {
-    "id_giochi": 1,
+    "id_giochi": 16,
     "nome_giochi": "League of Legends",
     "url_img": "https://example.com/images/lol.png"
   }
@@ -429,14 +429,16 @@ Risposta 200
 
 
 ```json
+[
   {
-    "id_gioco": 1,
+    "id_giochi": 16,
     "nome_giochi": "League of Legends",
   },
   {
-    "id_gioco": 2,
+    "id_giochi": 17,
     "nome_giochi": "Valorant",
   }
+]
 ```
 
 ### 28 `GET  /api/impostazioni`
@@ -447,12 +449,13 @@ Risposta 200
 
 ```json
 {
-  "limite_iscrizioni_default": 16,
-  "notifiche_attive": true
+  "id_impostazioni": 1,
+  "max_tornei_attivi_utente": 3,
+  "aggiornato_il": "2026-10-17T15:00:00"
 }
 ```
 
-### 29 `PATCH /api/admin`
+### 29 `PATCH /api/impostazioni`
 Accesso: admin. Permette a un amministratore di aggiornare i parametri di configurazione globali. Richiede l'autorizzazione admin e valida che il valore passato sia un intero/parametro ammesso.
 
 Body
@@ -465,8 +468,9 @@ Risposta 200
 
 ```json
 {
-  "limite_iscrizioni_default": 32,
-  "notifiche_attive": true
+  "id_impostazioni": 1,
+  "max_tornei_attivi_utente": 3,
+  "aggiornato_il": "2026-10-17T15:00:00"
 }
 ```
 Errori: 400 per valori non validi, 403 se l'utente non è admin.
@@ -500,7 +504,7 @@ Errori: 400 per valori non validi, 403 se l'utente non è admin.
 | 23 | POST | `/api/tornei/{id_tornei}/partite` | admin |
 | 24 | PATCH | `/api/partite/{id_partite}` | admin |
 | 25 | DELETE | `/api/partite/{id_partite}` | admin |
-| 26 | GET |  `/api/nome gioco/{id_gioco}` | pubblico |
-| 27 | GET |  `/api/giochi/` |  pubblico |
+| 26 | GET |  `GET /api/giochi/{id_giochi}` | pubblico |
+| 27 | GET |  `GET /api/giochi` |  pubblico |
 | 28 | GET |  `/api/impostazioni` |  pubblico |
-| 29 | PATCH | `/api/admin` |  pubblico |
+| 29 | PATCH | `/api/impostazioni` |  admin |

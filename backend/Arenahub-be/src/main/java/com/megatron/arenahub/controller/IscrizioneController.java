@@ -1,35 +1,69 @@
 package com.megatron.arenahub.controller;
 
-import com.megatron.arenahub.model.UtenteTorneo;
+import com.megatron.arenahub.dto.IscrizioneModificaRichiesta;
+import com.megatron.arenahub.dto.IscrizioneRisposta;
+import com.megatron.arenahub.model.Utente;
 import com.megatron.arenahub.service.IscrizioneService;
+import com.megatron.arenahub.service.SessioneService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/iscrizioni")
+@RequestMapping("/api/tornei/{id_tornei}/iscrizioni")
 public class IscrizioneController {
 
     @Autowired
     private IscrizioneService iscrizioneService;
 
+    @Autowired
+    private SessioneService sessioneService;
+
+    // 11. Iscrizioni di un torneo (pubblico)
+    @GetMapping
+    public Map<String, List<IscrizioneRisposta>> getIscrittiTorneo(@PathVariable("id_tornei") Long idTornei,
+                                                                   @RequestParam(required = false) String stato,
+                                                                   @RequestParam(required = false) Integer page,
+                                                                   @RequestParam(required = false) Integer limit) {
+        List<IscrizioneRisposta> iscrizioni =
+                iscrizioneService.elencoPerTorneo(idTornei, stato, sessioneService.isAdmin(), page, limit);
+        return Map.of("iscrizioni", iscrizioni);
+    }
+
+    // 12. Iscriversi a un torneo (autenticato)
     @PostMapping
-    public UtenteTorneo iscriviUtente(@RequestParam Long utenteId, @RequestParam Long torneoId) {
-        return iscrizioneService.iscriviUtenteATorneo(utenteId, torneoId);
+    @ResponseStatus(HttpStatus.CREATED)
+    public IscrizioneRisposta iscriviUtente(@PathVariable("id_tornei") Long idTornei) {
+        Utente utente = sessioneService.richiediLogin();
+        return iscrizioneService.iscrivi(utente, idTornei);
     }
 
-    @GetMapping("/torneo/{torneoId}")
-    public List<UtenteTorneo> getIscrittiTorneo(@PathVariable Long torneoId) {
-        return iscrizioneService.ottieniIscrittiPerTorneo(torneoId);
-    }
-
+    // 13. Annullare la propria iscrizione (autenticato)
     @DeleteMapping
-    public String cancellaIscrizione(@RequestParam Long utenteId, @RequestParam Long torneoId) {
-        boolean cancellato = iscrizioneService.rimuoviIscrizione(utenteId, torneoId);
-        if (cancellato) {
-            return "Iscrizione cancellata con successo";
-        }
-        return "Impossibile cancellare l'iscrizione";
+    public Map<String, String> annullaIscrizione(@PathVariable("id_tornei") Long idTornei) {
+        Utente utente = sessioneService.richiediLogin();
+        iscrizioneService.annullaPropria(utente, idTornei);
+        return Map.of("messaggio", "Iscrizione annullata");
+    }
+
+    // 14. Modifica stato di un'iscrizione (admin)
+    @PatchMapping("/{id_utenti_tornei}")
+    public IscrizioneRisposta modificaStato(@PathVariable("id_tornei") Long idTornei,
+                                            @PathVariable("id_utenti_tornei") Long idUtentiTornei,
+                                            @RequestBody IscrizioneModificaRichiesta richiesta) {
+        sessioneService.richiediAdmin();
+        return iscrizioneService.modificaStato(idTornei, idUtentiTornei, richiesta.stato());
+    }
+
+    // 15. Rimuovere un'iscrizione (admin)
+    @DeleteMapping("/{id_utenti_tornei}")
+    public Map<String, String> rimuoviIscrizione(@PathVariable("id_tornei") Long idTornei,
+                                                 @PathVariable("id_utenti_tornei") Long idUtentiTornei) {
+        sessioneService.richiediAdmin();
+        iscrizioneService.rimuovi(idTornei, idUtentiTornei);
+        return Map.of("messaggio", "Iscrizione rimossa");
     }
 }

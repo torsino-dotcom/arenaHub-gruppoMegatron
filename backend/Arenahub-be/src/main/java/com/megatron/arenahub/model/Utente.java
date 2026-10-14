@@ -1,6 +1,6 @@
 package com.megatron.arenahub.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,27 +13,29 @@ public class Utente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_utenti")
     private Long id;
 
     private String nome;
+    private String cognome;
+    private String username;
     private String email;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
-
+    private String password; // hash BCrypt
     private String ruolo;
 
     // Costruttore senza parametri (richiesto da JPA)
     public Utente() {
-        this.ruolo = "UTENTE";
+        this.ruolo = "utente";
     }
 
     // Costruttore di utilità
-    public Utente(String nome, String email, String password) {
+    public Utente(String nome, String cognome, String username, String email, String password) {
         this.nome = nome;
+        this.cognome = cognome;
+        this.username = username;
         this.email = email;
         this.password = password;
-        this.ruolo = "UTENTE";
+        this.ruolo = "utente";
     }
 
     // Getter e Setter
@@ -51,6 +53,22 @@ public class Utente {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCognome() {
+        return cognome;
+    }
+
+    public void setCognome(String cognome) {
+        this.cognome = cognome;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {

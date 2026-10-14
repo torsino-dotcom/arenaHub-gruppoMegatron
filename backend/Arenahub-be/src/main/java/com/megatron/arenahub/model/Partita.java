@@ -1,11 +1,15 @@
 package com.megatron.arenahub.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "partite")
@@ -13,25 +17,43 @@ public class Partita {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_partite")
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "id_tornei")
     private Torneo torneo;
 
     @ManyToOne
+    @JoinColumn(name = "id_utenti1")
     private Utente giocatore1;
 
     @ManyToOne
+    @JoinColumn(name = "id_utenti2")
     private Utente giocatore2;
 
+    @Column(name = "orario_inizio")
+    private LocalDateTime orarioInizio;
+
+    @Column(name = "punteggio_1")
     private int punteggioGiocatore1;
+
+    @Column(name = "punteggio_2")
     private int punteggioGiocatore2;
+
+    @Column(name = "persona_vincitrice")
+    private String personaVincitrice;
+
+    @Column(name = "formato_match")
+    private String formatoMatch;
+
     private String stato;
+    private String fase;
 
     public Partita() {
         this.punteggioGiocatore1 = 0;
         this.punteggioGiocatore2 = 0;
-        this.stato = "DA_GIOCARE";
+        this.stato = "programmata";
     }
 
     public Long getId() {
@@ -66,6 +88,14 @@ public class Partita {
         this.giocatore2 = giocatore2;
     }
 
+    public LocalDateTime getOrarioInizio() {
+        return orarioInizio;
+    }
+
+    public void setOrarioInizio(LocalDateTime orarioInizio) {
+        this.orarioInizio = orarioInizio;
+    }
+
     public int getPunteggioGiocatore1() {
         return punteggioGiocatore1;
     }
@@ -82,11 +112,35 @@ public class Partita {
         this.punteggioGiocatore2 = punteggioGiocatore2;
     }
 
+    public String getPersonaVincitrice() {
+        return personaVincitrice;
+    }
+
+    public void setPersonaVincitrice(String personaVincitrice) {
+        this.personaVincitrice = personaVincitrice;
+    }
+
+    public String getFormatoMatch() {
+        return formatoMatch;
+    }
+
+    public void setFormatoMatch(String formatoMatch) {
+        this.formatoMatch = formatoMatch;
+    }
+
     public String getStato() {
         return stato;
     }
 
     public void setStato(String stato) {
         this.stato = stato;
+    }
+
+    public String getFase() {
+        return fase;
+    }
+
+    public void setFase(String fase) {
+        this.fase = fase;
     }
 }

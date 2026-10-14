@@ -36,7 +36,7 @@
                         </a>
 
                         @if (authService.currentUser()?.ruolo === 'admin') {
-                        <a routerLink="/area-utenti/admin" (click)="closeUserMenu(); closeMenu()">
+                        <a routerLink="/admin" (click)="closeUserMenu(); closeMenu()">
                             Area Admin
                         </a>
                         }

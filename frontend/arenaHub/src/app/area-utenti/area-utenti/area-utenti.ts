@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
@@ -9,4 +10,6 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './area-utenti.scss',
   templateUrl: './area-utenti.html',
 })
-export class AreaUtenti {}
+export class AreaUtenti {
+  readonly authService = inject(AuthService)
+}

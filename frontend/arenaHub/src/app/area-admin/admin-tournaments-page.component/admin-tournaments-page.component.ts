@@ -1,16 +1,16 @@
-import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NewTournament, TournamentStoreService } from '../../features/tornei/tournament-store.service';
 import { TournamentStatus } from '../../features/tornei/tornei.model';
+import { NewTournament, TournamentStoreService } from '../../features/tornei/tournament-store.service';
+import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  imports: [DatePipe, RouterLink],
-  selector: 'app-area-admin',
-  styleUrl: './area-admin.scss',
-  templateUrl: './area-admin.html',
+  imports: [RouterLink, DatePipe],
+  selector: 'app-admin-tournaments-page.component',
+  styleUrl: './admin-tournaments-page.component.scss',
+  templateUrl: './admin-tournaments-page.component.html',
 })
-export class AreaAdmin {
+export class AdminTournamentsPageComponent {
   private readonly tournamentStore = inject(TournamentStoreService)
 
   readonly formOpen = signal(false)

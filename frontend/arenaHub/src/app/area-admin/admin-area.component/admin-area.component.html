@@ -1,0 +1,20 @@
+<section class="ah-section admin-area">
+    <div class="container-fluid px-3 px-xxl-5">
+        <div class="row g-4">
+            <main class="col-12 col-xl-10">
+                <div class="ah-surface admin-area__content p-3 p-xl-4">
+                    <router-outlet />
+                </div>
+            </main>
+
+            <aside class="col-12 col-xl-2">
+                <nav class="ah-surface admin-area__navigation p-3" aria-label="Navigazione amministrazione">
+                    <a routerLink="tornei" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+                        class="ah-button-primary w-100 text-center text-decoration-none">
+                        Gestione tornei
+                    </a>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</section>

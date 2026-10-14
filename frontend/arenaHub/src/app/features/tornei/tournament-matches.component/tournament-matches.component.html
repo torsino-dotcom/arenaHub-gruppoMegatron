@@ -2,53 +2,165 @@
   <div class="tournament-matches__heading">
     <div>
       <p class="tournament-matches__eyebrow">Calendario</p>
-      <h2 id="matches-title">Prossime partite</h2>
+      <h2 id="matches-title">{{ isAdmin() ? 'Gestione partite' : 'Prossime partite' }}</h2>
     </div>
+    @if (isAdmin()) {
+    <button class="ah-button-primary" type="button" (click)="openCreateForm()">
+      Aggiungi partita
+    </button>
+    }
   </div>
 
-  @if (matches().length > 0) {
-    <div class="tournament-matches__list">
-      @for (match of matches(); track match.id_partite) {
-        <article class="tournament-match">
-          <div class="tournament-match__info">
-            <span class="tournament-match__phase">{{ match.fase }}</span>
-            <span>{{ match.formato_match }}</span>
-          </div>
+  @if (isAdmin() && formOpen()) {
+  <form class="tournament-matches__form ah-surface" (submit)="saveMatch($event)">
+    <h3>{{ editingMatchId() ? 'Modifica partita' : 'Nuova partita' }}</h3>
 
-          <div class="tournament-match__players">
-            <span>{{ match.nome_persona1 }}</span>
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label class="form-label" for="match-player-1">Partecipante 1</label>
+        <select id="match-player-1" class="form-select" required [value]="form().id_utenti1 ?? ''"
+          (change)="setParticipant('id_utenti1', $event)">
+          <option value="">Seleziona partecipante</option>
+          @for (participant of participants(); track participant.id_utenti) {
+          <option [value]="participant.id_utenti">
+            {{ participant.username }} · #{{ participant.id_utenti }}
+          </option>
+          }
+        </select>
+      </div>
 
-            @if (match.stato === 'in_corso') {
-              <strong class="tournament-match__score">
-                {{ match.punteggio_1 ?? '–' }}
-                :
-                {{ match.punteggio_2 ?? '–' }}
-              </strong>
-            } @else {
-              <span class="tournament-match__versus">VS</span>
-            }
+      <div class="col-12 col-md-6">
+        <label class="form-label" for="match-player-2">Partecipante 2</label>
+        <select id="match-player-2" class="form-select" required [value]="form().id_utenti2 ?? ''"
+          (change)="setParticipant('id_utenti2', $event)">
+          <option value="">Seleziona partecipante</option>
+          @for (participant of participants(); track participant.id_utenti) {
+          <option [value]="participant.id_utenti">
+            {{ participant.username }} · #{{ participant.id_utenti }}
+          </option>
+          }
+        </select>
+      </div>
 
-            <span>{{ match.nome_persona2 }}</span>
-          </div>
+      <div class="col-12 col-md-6">
+        <label class="form-label" for="match-time">Data e ora</label>
+        <input id="match-time" class="form-control" type="datetime-local" required [value]="form().orario_inizio"
+          (input)="setText('orario_inizio', $event)" />
+      </div>
 
-          <div class="tournament-match__schedule">
-            <time [attr.datetime]="match.orario_inizio">
-              {{ match.orario_inizio | date: 'dd/MM/yyyy, HH:mm' }}
-            </time>
+      <div class="col-6 col-md-3">
+        <label class="form-label" for="match-score-1">Punteggio 1</label>
+        <input id="match-score-1" class="form-control" type="number" min="0" [value]="form().punteggio_1 ?? ''"
+          (input)="setNumber('punteggio_1', $event)" />
+      </div>
 
-            <span
-              class="tournament-match__status"
-              [attr.data-status]="match.stato"
-            >
-              {{ statusLabel(match.stato) }}
-            </span>
-          </div>
-        </article>
+      <div class="col-6 col-md-3">
+        <label class="form-label" for="match-score-2">Punteggio 2</label>
+        <input id="match-score-2" class="form-control" type="number" min="0" [value]="form().punteggio_2 ?? ''"
+          (input)="setNumber('punteggio_2', $event)" />
+      </div>
+
+      <div class="col-12 col-md-4">
+        <label class="form-label" for="match-format">Formato</label>
+        <input id="match-format" class="form-control" type="text" required placeholder="es. best of 3"
+          [value]="form().formato_match" (input)="setText('formato_match', $event)" />
+      </div>
+
+      <div class="col-12 col-md-4">
+        <label class="form-label" for="match-phase">Fase</label>
+        <input id="match-phase" class="form-control" type="text" required placeholder="es. Semifinale"
+          [value]="form().fase" (input)="setText('fase', $event)" />
+      </div>
+
+      <div class="col-12 col-md-4">
+        <label class="form-label" for="match-status">Stato</label>
+        <select id="match-status" class="form-select" [value]="form().stato" (change)="setStatus($event)">
+          <option value="programmata">Programmata</option>
+          <option value="in_corso">In corso</option>
+          <option value="conclusa">Conclusa</option>
+        </select>
+      </div>
+
+      @if (form().stato === 'conclusa') {
+      <div class="col-12">
+        <label class="form-label" for="match-winner">Vincitore</label>
+        <select id="match-winner" class="form-select" [value]="form().id_utente_vincitore ?? ''"
+          (change)="setWinner($event)">
+          <option value="">Seleziona vincitore</option>
+          @for (participant of participants(); track participant.id_utenti) {
+          @if (
+          participant.id_utenti === form().id_utenti1 ||
+          participant.id_utenti === form().id_utenti2
+          ) {
+          <option [value]="participant.id_utenti">
+            {{ participant.username }}
+          </option>
+          }
+          }
+        </select>
+      </div>
       }
     </div>
+
+    @if (errorMessage()) {
+    <p class="tournament-matches__error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <div class="tournament-matches__form-actions">
+      <button class="ah-button-primary" type="submit">
+        {{ editingMatchId() ? 'Salva modifiche' : 'Crea partita' }}
+      </button>
+      <button class="tournament-matches__cancel" type="button" (click)="cancelForm()">
+        Annulla
+      </button>
+    </div>
+  </form>
+  }
+
+  @if (matches().length > 0) {
+  <div class="tournament-matches__list">
+    @for (match of matches(); track match.id_partite) {
+    <article class="tournament-match">
+      <div class="tournament-match__info">
+        <span class="tournament-match__phase">{{ match.fase }}</span>
+        <span>{{ match.formato_match }}</span>
+      </div>
+
+      <div class="tournament-match__players">
+        <span>{{ participantName(match.id_utenti1) }}</span>
+
+        @if (match.stato !== 'programmata') {
+        <strong class="tournament-match__score">
+          {{ match.punteggio_1 ?? '–' }} : {{ match.punteggio_2 ?? '–' }}
+        </strong>
+        } @else {
+        <span class="tournament-match__versus">VS</span>
+        }
+
+        <span>{{ participantName(match.id_utenti2) }}</span>
+      </div>
+
+      <div class="tournament-match__schedule">
+        <time [attr.datetime]="match.orario_inizio">
+          {{ match.orario_inizio | date: 'dd/MM/yyyy, HH:mm' }}
+        </time>
+        <span class="tournament-match__status" [attr.data-status]="match.stato">
+          {{ statusLabel(match.stato) }}
+        </span>
+      </div>
+
+      @if (isAdmin()) {
+      <div class="tournament-match__admin-actions">
+        <button type="button" (click)="editMatch(match)">Modifica</button>
+        <button type="button" (click)="deleteMatch(match)">Elimina</button>
+      </div>
+      }
+    </article>
+    }
+  </div>
   } @else {
-    <p class="tournament-matches__empty">
-      Non ci sono partite in programma al momento.
-    </p>
+  <p class="tournament-matches__empty">
+    {{ isAdmin() ? 'Non ci sono partite per questo torneo.' : 'Non ci sono partite in programma al momento.' }}
+  </p>
   }
 </section>

@@ -2,6 +2,108 @@
   margin-top: 3rem;
   padding-top: 2rem;
   border-top: 1px solid var(--ah-border);
+
+  &__form {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: clamp(1rem, 2vw, 1.5rem);
+    border: 1px solid var(--ah-border);
+    border-radius: var(--ah-radius-md);
+
+    h3 {
+      margin: 0;
+      color: var(--ah-text);
+      font-size: 1.2rem;
+    }
+
+    .form-label {
+      color: var(--ah-text);
+      font-weight: 600;
+    }
+
+    .form-control,
+    .form-select {
+      border-color: var(--ah-border);
+      background-color: var(--ah-bg);
+      color: var(--ah-text);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--ah-accent);
+      box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--ah-accent) 25%, transparent);
+    }
+  }
+
+  &__error {
+    margin: 0;
+    color: var(--ah-danger);
+  }
+
+  &__form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  &__cancel {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--ah-border);
+    border-radius: var(--ah-radius-sm);
+    background: transparent;
+    color: var(--ah-text-muted);
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--ah-text-muted);
+      color: var(--ah-text);
+    }
+  }
+
+  // Modificato: la classe nel template è "tournament-match" al singolare
+  & .tournament-match__admin-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    button {
+      padding: 0.4rem 0.75rem;
+      border: 1px solid var(--ah-border);
+      border-radius: var(--ah-radius-sm);
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    button:first-child {
+      border-color: var(--ah-accent);
+      color: var(--ah-accent);
+
+      &:hover {
+        background: var(--ah-accent);
+        color: var(--ah-bg);
+      }
+    }
+
+    button:last-child {
+      border-color: var(--ah-danger);
+      color: var(--ah-danger);
+
+      &:hover {
+        background: var(--ah-danger);
+        color: var(--ah-text);
+      }
+    }
+  }
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
 }
 
 .tournament-matches__heading {
@@ -100,5 +202,10 @@
   .tournament-match__schedule {
     align-items: flex-start;
     text-align: left;
+  }
+
+  .tournament-matches__heading {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

@@ -5,7 +5,6 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../auth/auth.service';
 import { TournamentEnrollmentService } from '../tournament-enrollment.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MOCK_TOURNAMENTS } from '../mocktournaments';
 import { TournamentMatchesComponent } from '../tournament-matches.component/tournament-matches.component';
 import { TournamentStoreService } from '../tournament-store.service';
 
@@ -26,6 +25,10 @@ export class TournamentDetailPageComponent {
 
   readonly authService = inject(AuthService)
   private readonly enrollmentService = inject(TournamentEnrollmentService)
+
+  readonly isAdmin = computed(
+    () => this.authService.currentUser()?.ruolo === 'admin'
+  )
 
   readonly tournament = computed(() => {
     const id = Number(this.routeParams().get('id'))

@@ -107,7 +107,7 @@
                 }
             </aside>
         </div>
-        <app-tournament-matches [tournamentId]="tournament.id_tornei" />
+        <app-tournament-matches [tournamentId]="tournament.id_tornei" [isAdmin]="isAdmin()" />
     </div>
 </section>
 } @else {

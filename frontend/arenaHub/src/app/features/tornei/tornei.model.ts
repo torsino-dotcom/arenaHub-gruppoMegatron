@@ -58,13 +58,18 @@ export type MatchStatus = 'programmata' | 'in_corso' | 'conclusa'
 export interface TournamentMatch {
   id_partite: number
   id_tornei: number
-  nome_persona1: string
-  nome_persona2: string
+  id_utenti1: number
+  id_utenti2: number
   orario_inizio: string
   punteggio_1: number | null
   punteggio_2: number | null
-  persona_vincitrice: string | null
+  id_utente_vincitore: number | null
   formato_match: string
   stato: MatchStatus
   fase: string
 }
+
+export type TournamentMatchData = Omit<
+  TournamentMatch,
+  'id_partite' | 'id_tornei'
+>

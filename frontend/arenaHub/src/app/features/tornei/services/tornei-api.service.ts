@@ -9,6 +9,7 @@ export class TorneiApiService {
     private readonly apiUrl = '/api/tornei'
 
     getAll(filters: TournamentApiFilters = {}): Observable<TournamentApiItem[]> {
+        console.log("passo");
         let params = new HttpParams()
 
         for (const [key, value] of Object.entries(filters)) {

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("http://localhost:8000")
 @RequestMapping("/api/tornei/{id_tornei}/iscrizioni")
 public class IscrizioneController {
 

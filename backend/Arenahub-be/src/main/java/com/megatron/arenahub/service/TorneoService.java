@@ -59,6 +59,7 @@ public class TorneoService {
 
     public List<TorneoRisposta> elenca(String gioco, String stato, LocalDate dataDa, LocalDate dataA, String q,
                                        Integer page, Integer limit) {
+                                         System.out.println("entroi ");
         List<TorneoRisposta> risultato = torneoRepository.findAll(Sort.by("dataOra")).stream()
                 .filter(t -> gioco == null || corrispondeGioco(t, gioco))
                 .filter(t -> stato == null || stato.equalsIgnoreCase(t.getStato()))
@@ -67,6 +68,7 @@ public class TorneoService {
                 .filter(t -> q == null || (t.getNomeTorneo() != null && t.getNomeTorneo().toLowerCase().contains(q.toLowerCase())))
                 .map(t -> aRisposta(t, null))
                 .collect(Collectors.toList());
+                  System.out.println("Tornei trovati " + risultato.size());
         return Paginazione.applica(risultato, page, limit);
     }
 

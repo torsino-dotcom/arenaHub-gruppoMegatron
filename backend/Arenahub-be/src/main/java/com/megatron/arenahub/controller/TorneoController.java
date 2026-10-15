@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("http://localhost:8000")
 @RequestMapping("/api/tornei")
 public class TorneoController {
 
@@ -33,6 +34,7 @@ public class TorneoController {
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer limit) {
+               System.out.println("entroi controller ");
         return torneoService.elenca(gioco, stato, dataDa, dataA, q, page, limit);
     }
 

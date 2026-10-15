@@ -1,11 +1,11 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 INSERT INTO giochi (id_giochi, nome_giochi, url_img) VALUES 
-(1,'Valorant','valorant.jpg'),
-(2,'Rocket League','rocket.jpg'),
-(3,'Street Fighter 6','sf6.jpg'),
-(4,'EA SPORTS FC 26','fc26.jpg'),
-(5,'Apex Legends','apex.jpg');
+(1,'Valorant','img/valorant.jpg'),
+(2,'Rocket League','img/rocket.jpg'),
+(3,'Street Fighter 6','img/sf6.jpg'),
+(4,'EA SPORTS FC 26','img/fc26.jpg'),
+(5,'Apex Legends','img/apex.jpg');
 
 INSERT INTO utenti (id_utenti, nome, cognome, username, email, password, ruolo) VALUES 
 (1,'Paul','Megatron','mega_paul','megatron@email.com','megatron','utente'),

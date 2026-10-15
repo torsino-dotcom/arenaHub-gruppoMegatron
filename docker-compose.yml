@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.4
+    container_name: arenahub-db
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend/Arenahub-be
+    container_name: arenahub-backend
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+       db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend/arenaHub
+    container_name: arenahub-frontend
+    ports:
+      - "8000:80"
+    depends_on:
+      - backend
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: arenahub-phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: ${DB_USER}
+      PMA_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - db
+
+volumes:
+  db-data:

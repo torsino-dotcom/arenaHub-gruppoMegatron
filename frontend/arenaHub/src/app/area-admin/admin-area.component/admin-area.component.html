@@ -8,10 +8,16 @@
             </main>
 
             <aside class="col-12 col-xl-2">
-                <nav class="ah-surface admin-area__navigation p-3" aria-label="Navigazione amministrazione">
+                <nav class="ah-surface admin-area__navigation d-flex flex-column gap-3 p-3"
+                    aria-label="Navigazione amministrazione">
                     <a routerLink="tornei" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
                         class="ah-button-primary w-100 text-center text-decoration-none">
                         Gestione tornei
+                    </a>
+
+                    <a routerLink="impostazioni" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+                        class="ah-button-primary w-100 text-center text-decoration-none">
+                        Impostazioni globali
                     </a>
                 </nav>
             </aside>

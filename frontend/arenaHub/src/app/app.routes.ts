@@ -12,6 +12,7 @@ import { Settings } from './area-utenti/settings/settings';
 import { adminGuard } from './auth/guard/admin.guard';
 import { AdminAreaComponent } from './area-admin/admin-area.component/admin-area.component';
 import { AdminTournamentsPageComponent } from './area-admin/admin-tournaments-page.component/admin-tournaments-page.component';
+import { AdminSettingsPageComponent } from './area-admin/admin-settings-page.component.ts/admin-settings-page.component';
 
 export const routes: Routes = [
   {
@@ -66,6 +67,9 @@ export const routes: Routes = [
           },
           { 
             path: 'tornei', component: AdminTournamentsPageComponent 
+          },
+          { 
+            path: 'impostazioni', component: AdminSettingsPageComponent 
           },
         ],
       },

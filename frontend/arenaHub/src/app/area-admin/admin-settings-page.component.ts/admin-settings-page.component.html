@@ -1,0 +1,78 @@
+<section class="admin-settings">
+  <header class="admin-settings__header">
+    <div>
+      <p class="admin-settings__eyebrow">Configurazione piattaforma</p>
+      <h1>Impostazioni globali</h1>
+      <p>Gestisci il limite di tornei attivi a cui ogni utente può iscriversi.</p>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="ah-surface admin-settings__panel" role="status">
+      Caricamento impostazioni...
+    </div>
+  } @else {
+    <section class="ah-surface admin-settings__panel" aria-labelledby="active-limit-title">
+      <div>
+        <h2 id="active-limit-title">Tornei attivi per utente</h2>
+        <p>
+          Numero massimo di tornei ai quali un utente può risultare iscritto
+          contemporaneamente.
+        </p>
+      </div>
+
+      @if (errorMessage(); as error) {
+        <p class="admin-settings__message admin-settings__message--error" role="alert">
+          {{ error }}
+        </p>
+      }
+
+      @if (successMessage(); as message) {
+        <p class="admin-settings__message admin-settings__message--success" role="status">
+          {{ message }}
+        </p>
+      }
+
+      @if (settings()) {
+        <form class="admin-settings__form" (submit)="saveSettings($event)">
+          <div>
+            <label class="form-label" for="max-tornei-attivi">
+              Numero massimo
+            </label>
+            <input
+              id="max-tornei-attivi"
+              class="form-control"
+              type="number"
+              min="1"
+              step="1"
+              required
+              [value]="maxTorneiAttivi() ?? ''"
+              (input)="setMaxTorneiAttivi($event)"
+            />
+          </div>
+
+          @if (settings(); as currentSettings) {
+            <p class="admin-settings__updated">
+              Ultimo aggiornamento:
+              <time [attr.datetime]="currentSettings.aggiornato_il">
+                {{ currentSettings.aggiornato_il | date: 'dd/MM/yyyy, HH:mm' }}
+              </time>
+            </p>
+          }
+
+          <button
+            class="ah-button-primary"
+            type="submit"
+            [disabled]="!formIsValid() || saving()"
+          >
+            @if (saving()) {
+              Salvataggio...
+            } @else {
+              Salva impostazione
+            }
+          </button>
+        </form>
+      }
+    </section>
+  }
+</section>

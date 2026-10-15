@@ -2,61 +2,52 @@
   <h2 class="ah-section-title mb-4">I tuoi tornei</h2>
 
   @if (!authService.currentUser()) {
-    <p class="text-muted">
-      Accedi per visualizzare le tue iscrizioni.
-    </p>
-    <a class="ah-button-primary" routerLink="/login">Accedi</a>
+  <p class="text-muted">Accedi per visualizzare le tue iscrizioni.</p>
+  <a class="ah-button-primary" routerLink="/login">Accedi</a>
+  } @else if (loading()) {
+  <p class="text-muted" role="status">Caricamento dei tuoi tornei...</p>
+  } @else if (errorMessage(); as error) {
+  <p class="text-danger" role="alert">{{ error }}</p>
   } @else if (myTournaments().length === 0) {
-    <p class="text-muted">
-      Non sei ancora iscritto a nessun torneo.
-    </p>
+  <p class="text-muted">Non sei ancora iscritto a nessun torneo.</p>
   } @else {
-    <div class="d-flex flex-column gap-3">
-      @for (item of myTournaments(); track item.tournament.id_tornei) {
-        <article
-          class="ah-surface my-tournaments__item p-3 border border-secondary"
-        >
-          <div>
-            <h3 class="my-tournaments__name">
-              {{ item.tournament.nome_torneo }}
-            </h3>
+  @if (successMessage(); as message) {
+  <p class="text-success" role="status">{{ message }}</p>
+  }
 
-            <p class="my-tournaments__details">
-              {{ item.tournament.gioco }}
-              · {{ item.tournament.data_ora | date: 'dd/MM' }}
-              · {{ item.tournament.data_ora | date: 'HH:mm' }}
-            </p>
+  <div class="d-flex flex-column gap-3">
+    @for (item of myTournaments(); track item.id_utenti_tornei) {
+    <article class="ah-surface my-tournaments__item p-3 border border-secondary">
+      <div>
+        <h3 class="my-tournaments__name">{{ item.nome_torneo }}</h3>
 
-            <span
-              class="my-tournaments__status"
-              [attr.data-status]="item.status"
-            >
-              {{ item.status === 'confermato' ? 'Iscritto' : 'Lista d’attesa' }}
-            </span>
-          </div>
+        <p class="my-tournaments__details">
+          {{ item.gioco }}
+          · {{ item.data_ora | date: 'dd/MM' }}
+          · {{ item.data_ora | date: 'HH:mm' }}
+        </p>
 
-          <div class="my-tournaments__actions">
-            <span class="text-muted">
-              Posti {{ item.occupiedPlaces }}/{{ item.tournament.posti_max }}
-            </span>
+        <span class="my-tournaments__status" [attr.data-status]="item.stato">
+          {{ statusLabel(item.stato) }}
+        </span>
+      </div>
 
-            <a
-              class="ah-button-primary px-3 py-1"
-              [routerLink]="['/tornei', item.tournament.id_tornei]"
-            >
-              Visualizza
-            </a>
+      <div class="my-tournaments__actions">
+        <a class="ah-button-primary px-3 py-1" [routerLink]="['/tornei', item.id_tornei]">
+          Visualizza
+        </a>
 
-            <button
-              class="my-tournaments__cancel"
-              type="button"
-              (click)="cancel(item.tournament.id_tornei)"
-            >
-              Annulla iscrizione
-            </button>
-          </div>
-        </article>
-      }
-    </div>
+        <button class="my-tournaments__cancel" type="button" [disabled]="cancelingTournamentId() === item.id_tornei"
+          (click)="cancel(item.id_tornei)">
+          @if (cancelingTournamentId() === item.id_tornei) {
+          Annullamento...
+          } @else {
+          Annulla iscrizione
+          }
+        </button>
+      </div>
+    </article>
+    }
+  </div>
   }
 </section>

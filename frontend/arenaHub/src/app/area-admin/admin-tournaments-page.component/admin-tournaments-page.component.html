@@ -25,11 +25,17 @@
 
       <div class="col-12 col-md-6">
         <label class="form-label" for="gioco">Gioco</label>
-        <select id="gioco" class="form-select" [value]="form().gioco" (change)="setText('gioco', $event)">
-          <option>League of Legends</option>
-          <option>Valorant</option>
-          <option>Rocket League</option>
+        <select id="gioco" class="form-select" [value]="form().id_giochi" (change)="setGame($event)" required>
+          <option [value]="0">Seleziona un gioco</option>
+
+          @for (game of games(); track game.id_giochi) {
+          <option [value]="game.id_giochi">{{ game.nome_giochi }}</option>
+          }
         </select>
+
+        @if (gamesError(); as error) {
+        <p class="admin-tournaments__error" role="alert">{{ error }}</p>
+        }
       </div>
 
       <div class="col-12">
@@ -84,8 +90,12 @@
     </p>
     }
 
-    <button class="ah-button-primary mt-3" type="submit">
-      {{ editingTournamentId() !== null ? 'Salva torneo' : 'Crea torneo'}}
+    <button class="ah-button-primary mt-3" type="submit" [disabled]="saving()">
+      @if (saving()) {
+      Salvataggio...
+      } @else {
+      {{ editingTournamentId() !== null ? 'Salva torneo' : 'Crea torneo' }}
+      }
     </button>
   </form>
   }
@@ -93,7 +103,11 @@
   <div class="admin-tournaments__list ah-surface">
     <h2>Tornei presenti</h2>
 
-    @if (tournaments().length === 0) {
+    @if (loading()) {
+    <p class="text-muted" role="status">Caricamento tornei...</p>
+    } @else if (errorMessage(); as error) {
+    <p class="admin-tournaments__error" role="alert">{{ error }}</p>
+    } @else if (tournaments().length === 0) {
     <p class="text-muted">Non ci sono tornei da mostrare.</p>
     } @else {
     <div class="table-responsive">
@@ -103,7 +117,6 @@
             <th scope="col">Torneo</th>
             <th scope="col">Gioco</th>
             <th scope="col">Data</th>
-            <th scope="col">Posti</th>
             <th scope="col">Stato</th>
             <th scope="col">Azioni</th>
           </tr>
@@ -116,9 +129,6 @@
             <td>{{ tournament.gioco }}</td>
             <td>{{ tournament.data_ora | date: 'dd/MM/yyyy, HH:mm' }}</td>
             <td>
-              {{ tournament.posti_occupati }} / {{ tournament.posti_max }}
-            </td>
-            <td>
               <span class="admin-tournaments__status" [attr.data-status]="tournament.stato">
                 {{ statusLabel(tournament.stato) }}
               </span>
@@ -129,12 +139,8 @@
                   Visualizza
                 </a>
 
-                <button
-                    class="admin-tournaments__edit"
-                    type="button"
-                    (click)="editTournament(tournament)"
-                >
-                    Modifica
+                <button class="admin-tournaments__edit" type="button" (click)="editTournament(tournament)">
+                  Modifica
                 </button>
 
                 <button class="admin-tournaments__delete" type="button" (click)="deleteTournament(

@@ -89,11 +89,13 @@ export class TournamentListPageComponent implements OnInit {
     const status = this.selectedStatus()
 
     return this.tournaments().filter(tournament => {
-      //nome o descrizione
+      const name = (tournament.nome_torneo ?? '').toLocaleLowerCase()
+      const description = (tournament.descrizione ?? '').toLocaleLowerCase()
+
       const matchesQuery =
         query.length === 0 ||
-        tournament.nome_torneo.toLocaleLowerCase().includes(query) ||
-        tournament.descrizione.toLocaleLowerCase().includes(query)
+        name.includes(query) ||
+        description.includes(query)
 
       const matchesGame =
         game === 'tutti' || tournament.gioco === game

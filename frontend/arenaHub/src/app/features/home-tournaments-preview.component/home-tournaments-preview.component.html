@@ -14,13 +14,21 @@
             </a>
         </div>
 
+        @if (loading()) {
+        <p role="status">Caricamento tornei…</p>
+        } @else if (errorMessage(); as error) {
+        <p role="alert">{{ error }}</p>
+        } @else if (tournaments().length > 0) {
         <div class="row g-4">
             @for (tournament of tournaments(); track tournament.id_tornei) {
-                <div class="col-12 col-md-6 col-xl-4">
-                    <app-tournament-card [tournament]="tournament"/>
-                </div>
+            <div class="col-12 col-md-6 col-xl-4">
+                <app-tournament-card [tournament]="tournament" />
+            </div>
             }
         </div>
+        } @else {
+        <p>Al momento non ci sono tornei aperti in programma.</p>
+        }
 
         <div class="tournaments-preview__mobile-link">
             <a class="ah-button-primary" routerLink="/tornei">

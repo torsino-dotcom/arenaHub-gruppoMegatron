@@ -9,7 +9,7 @@ import { Component, input, output } from '@angular/core';
 })
 export class HomeHeroComponent {
   eyebrow = input("ARENAHUB")
-  title = input('Il prossimo torneo inizia qui')
+  title = input('Arenahub')
   subtitle = input('Scopri i tornei, trova la tua community e preparati a giocare.')
   ctaLabel = input('Scopri i tornei')
 

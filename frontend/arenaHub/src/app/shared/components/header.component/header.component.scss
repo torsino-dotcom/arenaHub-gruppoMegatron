@@ -17,78 +17,6 @@
   gap: 2rem;
 }
 
-.site-header__username {
-  color: var(--ah-text);
-  font-weight: 600;
-}
-
-.site-header__logout {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--ah-text-muted);
-  font: inherit;
-  cursor: pointer;
-
-  &:hover {
-    color: var(--ah-accent);
-  }
-}
-
-.site-header__user-menu {
-  position: relative;
-}
-
-.site-header__username {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  border: 0;
-  background: transparent;
-  color: var(--ah-text);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-
-  &:hover {
-    color: var(--ah-accent);
-  }
-}
-
-.site-header__user-panel {
-  position: absolute;
-  top: calc(100% + 0.75rem);
-  right: 0;
-  z-index: 1000;
-  min-width: 13rem;
-  padding: 0.5rem;
-  border: 1px solid var(--ah-border);
-  border-radius: var(--ah-radius-md);
-  background: var(--ah-surface-raised);
-  box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 35%);
-
-  a,
-  .site-header__logout {
-    display: block;
-    width: 100%;
-    padding: 0.75rem;
-    border: 0;
-    border-radius: var(--ah-radius-sm);
-    background: transparent;
-    color: var(--ah-text);
-    font: inherit;
-    text-align: left;
-    text-decoration: none;
-    cursor: pointer;
-
-    &:hover {
-      background: var(--ah-surface-hover);
-      color: var(--ah-accent);
-    }
-  }
-}
-
 .site-brand {
   display: inline-flex;
   flex: 0 0 auto;
@@ -99,14 +27,11 @@
 }
 
 .site-brand__mark {
-  display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
-  place-items: center;
-  color: var(--ah-bg);
-  background: var(--ah-accent);
-  border-radius: var(--ah-radius-sm);
-  font-weight: 900;
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  object-fit: contain;
 }
 
 .site-brand__name {
@@ -126,33 +51,260 @@
   justify-content: space-between;
 }
 
+/* MODIFICA: le voci della navbar hanno più spazio per essere cliccate */
 .site-header__links,
 .site-header__actions {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
 }
 
-.site-header__links a,
+.site-header__links {
+  gap: 0.4rem;
+
+  a {
+    display: inline-flex;
+    min-height: 2.9rem;
+    align-items: center;
+    padding: 0.65rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: var(--ah-radius-sm);
+    color: var(--ah-text-muted);
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      color 160ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease,
+      transform 160ms ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      border-color: var(--ah-border);
+      background: var(--ah-surface-hover);
+      color: var(--ah-text);
+    }
+
+    &.is-active {
+      border-color: color-mix(in srgb, var(--ah-accent) 45%, transparent);
+      background: color-mix(in srgb, var(--ah-accent) 12%, transparent);
+      color: var(--ah-accent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ah-accent);
+      outline-offset: 2px;
+    }
+  }
+}
+
+/* MODIFICA: maggiore area cliccabile per i controlli a destra */
+.site-header__actions {
+  gap: 0.85rem;
+}
+
 .site-header__login {
+  display: inline-flex;
+  min-height: 2.9rem;
+  align-items: center;
+  padding: 0.65rem 1rem;
+  border-radius: var(--ah-radius-sm);
   color: var(--ah-text-muted);
   font-weight: 600;
   text-decoration: none;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
 
-  &:hover,
-  &.is-active {
-    color: var(--ah-text);
+  &:hover {
+    background: var(--ah-surface-hover);
+    color: var(--ah-accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ah-accent);
+    outline-offset: 2px;
   }
 }
 
 .site-menu-toggle {
   display: none;
   margin-left: auto;
-  color: var(--ah-text);
-  background: transparent;
+  padding: 0.4rem 0.65rem;
   border: 1px solid var(--ah-border);
   border-radius: var(--ah-radius-sm);
-  padding: 0.4rem 0.65rem;
+  background: transparent;
+  color: var(--ah-text);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--ah-accent);
+    color: var(--ah-accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ah-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* MODIFICA: menu utente più riconoscibile come pulsante */
+.site-header__user-menu {
+  position: relative;
+}
+
+.site-header__username {
+  display: inline-flex;
+  min-height: 2.9rem;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.35rem 0.8rem 0.35rem 0.4rem;
+  border: 1px solid var(--ah-border);
+  border-radius: 999px;
+  background: var(--ah-bg);
+  color: var(--ah-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+
+  &:hover,
+  &[aria-expanded='true'] {
+    border-color: var(--ah-accent);
+    background: var(--ah-surface-hover);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ah-accent) 14%, transparent);
+  }
+
+  &:hover .site-header__chevron,
+  &[aria-expanded='true'] .site-header__chevron {
+    color: var(--ah-accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ah-accent);
+    outline-offset: 3px;
+  }
+}
+
+.site-header__avatar {
+  display: inline-grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--ah-accent) 55%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ah-accent) 16%, var(--ah-surface));
+  color: var(--ah-accent);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+
+  &--large {
+    width: 2.6rem;
+    height: 2.6rem;
+    font-size: 1rem;
+  }
+}
+
+.site-header__username-label {
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site-header__chevron {
+  color: var(--ah-text-muted);
+  transition: color 160ms ease;
+}
+
+/* MODIFICA: dropdown utente con più spazio e voci più comode da cliccare */
+.site-header__user-panel {
+  position: absolute;
+  top: calc(100% + 0.65rem);
+  right: 0;
+  z-index: 1000;
+  width: 17rem;
+  padding: 0.55rem;
+  border: 1px solid var(--ah-border);
+  border-radius: var(--ah-radius-md);
+  background: var(--ah-surface-raised);
+  box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 40%);
+
+  a,
+  .site-header__logout {
+    display: flex;
+    width: 100%;
+    min-height: 2.8rem;
+    align-items: center;
+    padding: 0.7rem 0.8rem;
+    border: 0;
+    border-radius: var(--ah-radius-sm);
+    background: transparent;
+    color: var(--ah-text-muted);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      color 160ms ease,
+      background-color 160ms ease,
+      padding-left 160ms ease;
+
+    &:hover {
+      padding-left: 1rem;
+      background: var(--ah-surface-hover);
+      color: var(--ah-accent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ah-accent);
+      outline-offset: -2px;
+    }
+  }
+
+  .site-header__logout {
+    margin-top: 0.35rem;
+    border-top: 1px solid var(--ah-border);
+    border-radius: 0;
+    color: var(--ah-danger);
+
+    &:hover {
+      background: color-mix(in srgb, var(--ah-danger) 12%, transparent);
+      color: var(--ah-danger);
+    }
+  }
+}
+
+/* MODIFICA: l’intestazione mostra identità e ruolo dell’utente */
+.site-header__user-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+  padding: 0.65rem 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--ah-border);
+
+  div {
+    display: grid;
+    min-width: 0;
+    gap: 0.15rem;
+  }
+
+  strong {
+    overflow: hidden;
+    color: var(--ah-text);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    color: var(--ah-text-muted);
+    font-size: 0.8rem;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -184,11 +336,32 @@
   .site-header__actions {
     align-items: stretch;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
+  }
+
+  .site-header__links a,
+  .site-header__login {
+    width: 100%;
   }
 
   .site-header__actions {
     padding-top: 1rem;
     border-top: 1px solid var(--ah-border);
+  }
+
+  /* MODIFICA: il menu utente si adatta alla navigazione mobile aperta */
+  .site-header__user-menu {
+    width: 100%;
+  }
+
+  .site-header__username {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .site-header__user-panel {
+    position: static;
+    width: 100%;
+    margin-top: 0.5rem;
   }
 }

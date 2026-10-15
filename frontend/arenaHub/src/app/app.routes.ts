@@ -68,9 +68,6 @@ export const routes: Routes = [
           { 
             path: 'tornei', component: AdminTournamentsPageComponent 
           },
-          { 
-            path: 'impostazioni', component: AdminSettingsPageComponent 
-          },
         ],
       },
     ],

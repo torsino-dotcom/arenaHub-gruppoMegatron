@@ -11,6 +11,8 @@ import { GiochiApiService } from '../../giochi/giochi-api.service';
 import { catchError, combineLatest, distinctUntilChanged, finalize, map, of, switchMap } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TournamentEnrollmentApiService } from '../services/tournament-enrollment-api.service';
+import { PlatformSettingsApi } from '../../../area-admin/impostazioni.model';
+import { ImpostazioniApiService } from '../../../area-admin/services/impostazioni-api.service';
 
 @Component({
   imports: [DatePipe, RouterLink, TournamentMatchesComponent],
@@ -20,6 +22,7 @@ import { TournamentEnrollmentApiService } from '../services/tournament-enrollmen
   templateUrl: './tournament-detail-page.component.html',
 })
 export class TournamentDetailPageComponent {
+  private readonly settingsApi = inject(ImpostazioniApiService)
   private readonly torneiApi = inject(TorneiApiService)
   private readonly giochiApi = inject(GiochiApiService)
   private readonly route = inject(ActivatedRoute)
@@ -35,15 +38,45 @@ export class TournamentDetailPageComponent {
   readonly enrollmentMessage = signal<string | null>(null)
   private readonly enrollmentRefresh = signal(0)
 
+  readonly settingsLoading = signal(true)
+  readonly settingsError = signal<string | null>(null)
+  readonly myEnrollmentsLoading = signal(true)
+  readonly myEnrollmentsError = signal<string | null>(null)
+
   private readonly routeParams = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap
   })
 
-
-
   readonly isAdmin = computed(
     () => this.authService.currentUser()?.ruolo === 'admin'
   )
+
+  private readonly platformSettings = toSignal(
+    this.settingsApi.get().pipe(
+      catchError(() => {
+        this.settingsError.set('Non è stato possibile verificare il limite di iscrizioni.')
+        return of(null as PlatformSettingsApi | null)
+      }),
+      finalize(() => this.settingsLoading.set(false))
+    ),
+    { initialValue: null as PlatformSettingsApi | null }
+  )
+
+  readonly maxActiveTournaments = computed(
+    () => this.platformSettings()?.max_tornei_attivi_utente ?? null
+  )
+
+  readonly activeEnrollmentCount = computed(() =>
+    this.myEnrollments().filter(enrollment =>
+      enrollment.stato === 'confermato' ||
+      enrollment.stato === 'in_coda'
+    ).length
+  )
+
+  readonly hasReachedActiveLimit = computed(() => {
+    const limit = this.maxActiveTournaments()
+    return limit !== null && this.activeEnrollmentCount() >= limit
+  })
 
   private readonly games = toSignal(
     this.giochiApi.getAll().pipe(
@@ -125,16 +158,23 @@ export class TournamentDetailPageComponent {
       user: toObservable(this.authService.currentUser),
       refresh: toObservable(this.enrollmentRefresh)
     }).pipe(
-      switchMap(({ user }) =>
-        user
-          ? this.enrollmentApi.getMine().pipe(
-            catchError(() => {
-              this.enrollmentError.set('Non è stato possibile caricare le tue iscrizioni.')
-              return of([] as MyTournamentEnrollmentApi[])
-            })
-          )
-          : of([] as MyTournamentEnrollmentApi[])
-      )
+      switchMap(({ user }) => {
+        if (!user) {
+          this.myEnrollmentsLoading.set(false)
+          return of([] as MyTournamentEnrollmentApi[])
+        }
+
+        this.myEnrollmentsLoading.set(true)
+        this.myEnrollmentsError.set(null)
+
+        return this.enrollmentApi.getMine().pipe(
+          catchError(() => {
+            this.myEnrollmentsError.set('Non è stato possibile caricare le tue iscrizioni.')
+            return of([] as MyTournamentEnrollmentApi[])
+          }),
+          finalize(() => this.myEnrollmentsLoading.set(false))
+        )
+      })
     ),
     { initialValue: [] as MyTournamentEnrollmentApi[] }
   )
@@ -182,7 +222,17 @@ export class TournamentDetailPageComponent {
     const user = this.authService.currentUser()
     const tournament = this.tournament()
 
-    if (!user || !tournament || !this.registrationIsOpen() || this.enrollmentLoading()) {
+    if (
+      !user ||
+      !tournament ||
+      !this.registrationIsOpen() ||
+      this.enrollmentLoading() ||
+      this.settingsLoading() ||
+      this.myEnrollmentsLoading() ||
+      this.settingsError() ||
+      this.myEnrollmentsError() ||
+      this.hasReachedActiveLimit()
+    ) {
       return
     }
 

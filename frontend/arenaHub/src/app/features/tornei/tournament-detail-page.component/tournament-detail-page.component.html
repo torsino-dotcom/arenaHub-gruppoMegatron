@@ -9,11 +9,15 @@
             <span aria-hidden="true">←</span>
             Torna ai tornei
         </a>
+
         <div class="tournament-detail__layout">
             <article class="tournament-detail__main">
                 <div class="tournament-detail__eyebrow">
                     <span>{{ tournament.gioco }}</span>
-                    <span class="tournament-detail__status" [attr.data-status]="tournament.stato">
+                    <span
+                        class="tournament-detail__status"
+                        [attr.data-status]="tournament.stato"
+                    >
                         {{ statusLabel(tournament.stato) }}
                     </span>
                 </div>
@@ -70,18 +74,27 @@
                     iscritti
                 </p>
 
-                <div class="tournament-detail__progress" role="progressbar"
-                    [attr.aria-valuenow]="tournament.posti_occupati" [attr.aria-valuemin]="0"
-                    [attr.aria-valuemax]="tournament.posti_max" aria-label="Posti occupati">
+                <div
+                    class="tournament-detail__progress"
+                    role="progressbar"
+                    [attr.aria-valuenow]="occupiedPlaces()"
+                    [attr.aria-valuemin]="0"
+                    [attr.aria-valuemax]="tournament.posti_max"
+                    aria-label="Posti occupati"
+                >
                     <span [style.width.%]="occupancyPercent()"></span>
                 </div>
 
+                <!-- MODIFICA: i controlli sotto gestiscono accesso, iscrizione e limite globale -->
                 @if (!authService.isAuthenticated()) {
                 <p class="tournament-detail__notice">
                     Accedi per iscriverti al torneo.
                 </p>
 
-                <a class="ah-button-primary tournament-detail__action" routerLink="/login">
+                <a
+                    class="ah-button-primary tournament-detail__action"
+                    routerLink="/login"
+                >
                     Accedi per iscriverti
                 </a>
                 } @else if (currentRegistration(); as registration) {
@@ -89,8 +102,32 @@
                     @if (registration.stato === 'confermato') {
                     Sei iscritto al torneo.
                     } @else {
-                    Sei in lista d'attesa.
+                    Sei in lista d’attesa.
                     }
+                </p>
+                } @else if (settingsLoading() || myEnrollmentsLoading()) {
+                <p class="tournament-detail__notice" role="status">
+                    Verifica delle iscrizioni in corso…
+                </p>
+                } @else if (settingsError(); as error) {
+                <p class="tournament-detail__notice" role="alert">
+                    {{ error }}
+                </p>
+                } @else if (myEnrollmentsError(); as error) {
+                <p class="tournament-detail__notice" role="alert">
+                    {{ error }}
+                </p>
+                } @else if (!registrationIsOpen()) {
+                <p class="tournament-detail__notice">
+                    Le iscrizioni non sono disponibili in questo momento.
+                </p>
+                } @else if (hasReachedActiveLimit()) {
+                <p class="tournament-detail__notice">
+                    Hai già raggiunto il limite di
+                    {{ activeEnrollmentCount() }} /
+                    {{ maxActiveTournaments() }}
+                    tornei attivi. Annulla un’iscrizione dalla tua area utente
+                    per iscriverti a un altro torneo.
                 </p>
                 } @else {
                 <p class="tournament-detail__notice">
@@ -101,11 +138,16 @@
                     }
                 </p>
 
-                <button class="ah-button-primary tournament-detail__action" type="button" (click)="enroll()">
+                <button
+                    class="ah-button-primary tournament-detail__action"
+                    type="button"
+                    (click)="enroll()"
+                    [disabled]="enrollmentLoading()"
+                >
                     @if (enrollmentLoading()) {
-                    Invio in corso...
+                    Invio in corso…
                     } @else if (isFull()) {
-                    Entra in lista d'attesa
+                    Entra in lista d’attesa
                     } @else {
                     Iscriviti al torneo
                     }
@@ -113,7 +155,11 @@
                 }
             </aside>
         </div>
-        <app-tournament-matches [tournamentId]="tournament.id_tornei" [isAdmin]="isAdmin()" />
+
+        <app-tournament-matches
+            [tournamentId]="tournament.id_tornei"
+            [isAdmin]="isAdmin()"
+        />
     </div>
 </section>
 } @else {

@@ -86,5 +86,14 @@ export class AuthService {
         void firstValueFrom(this.authApi.logout()).catch(() => undefined)
     }
 
+    async restoreSession(): Promise<void> {
+        try {
+            const user = await firstValueFrom(this.authApi.getMe())
+            this.user.set(user)
+        } catch {
+            this.user.set(null)
+        }
+    }
+
 
 }
